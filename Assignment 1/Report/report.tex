@@ -1,0 +1,67 @@
+\documentclass[11pt,oneside,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\date{}
+\usepackage{amsmath}
+\usepackage{color}
+
+\usepackage{sectsty}
+\usepackage{stmaryrd}
+\usepackage{gensymb}
+\usepackage{wasysym}
+\usepackage{amsfonts}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{subcaption}
+%__________WIDE HAT_________
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}%
+}{0.5ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+%______________________________
+
+\setlength{\parindent}{0in}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{float}
+\usepackage[british,UKenglish,swedish,USenglish,english,american]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{natbib}
+\pagestyle{fancy}
+\begin{document}
+\renewcommand{\bibname}{References}
+\hypersetup{citecolor=black}
+\begin{titlepage}\centering
+\vspace*{\fill}
+\Huge Assignment 1\\
+\vspace*{10mm}
+\large Methods of PCA, MDS and Isomap \\
+\vspace*{\fill}
+\large \textsc{DD2434 Advanced Machine Learning} \\
+\textsc{Filip Bergentoft, bergento@kth.se} \\
+\end{titlepage}
+
+\newpage
+
+\input{problem_1}
+
+
+\end{document}
