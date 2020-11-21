@@ -1,0 +1,16 @@
+\section*{Problem 7}
+The goal of this problem is to visualise how similar different animals at a zoo are by projecting the given data from $\mathbb{R}^{16}$ to $$\mathbb{R}^{2}$$ using three different embeddings; PCA, MDS and isomap.
+
+\subsection*{Preprocessing the data}
+In order to enable the applications of the embeddings the data has to be preprocessed by first removing the columns 'type' and 'animal name' from the data set. These can later be used in the visualisation.
+
+The remaining attributes are all boolean with values in $\{ 0,1 \}$ except the attribute 'legs' which takes values in $\{ 0, 2, 4, 6, 8 \}$. This attribute thus takes on values up to $8$ times the magnitude in comparison to the remaining attributes which corresponds to it having an importance weight of $8$ and the other a weight of $1$ when taking the distance between points. For this reason the magnitude of 'legs' will be scaled down by $8$ times, causing it to instead take values in  $\{ 0, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1 \}$.
+
+\subsection*{PCA}
+
+\subsection*{MDS}
+
+\subsection*{Isomap}
+
+
+\subsection*{Comparison}

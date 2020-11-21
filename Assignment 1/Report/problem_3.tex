@@ -1,0 +1,29 @@
+\section*{Problem 3}
+
+
+We want to maximise $\text{Tr}(Y^T W W^T Y) \text{ w.r.t. } W$ where $W$ is any orthogonal matrix and $Y \in \mathbb{R}^{d \times n} $. We begin by expressing $Y$ in terms of its SVD: $Y = U \Sigma V^T = \sum_{i = 1}^d \sigma_i u_i v_i^T$. Substituting this into the trace expression yields the following:
+
+\begin{align}
+  & \text{Tr}(Y^T W W^T Y) = \text{Tr}(\sum_{i = 1}^d \sigma_i v_i u_i^T W W^T \sum_{j = 1}^d \sigma_j u_j v_j^T)\\
+  & = \text{Tr}(\sum_{i = 1}^d \sum_{j = 1}^d \sigma_i \sigma_j v_i u_i^T W W^T u_j v_j^T) = \bigg\{ u_i^T W W^T u_j \text{ is a scalar } \bigg\} \\
+  & = \sum_{i = 1}^d \sum_{j = 1}^d \sigma_i \sigma_j  u_i^T W W^T u_j \text{Tr} (v_i v_j^T) \\
+  % Rewrite the line below to make it tidier
+  & = \bigg\{ \text{Using that Tr}(v_i v_j^T) = v_j^T v_i = 1, i = j, 0 \text{ otherwise} \bigg\} \\
+  & = \sum_{i = 1}^d\sigma_i^2 u_i^T W W^T u_i = \sum_{i = 1}^d\sum_{i = 1}^k\sigma_i^2 u_i^T w_j w_j^T u_i \\
+\end{align}
+
+Thus is
+% Need to add the constraints on w_j......
+
+\begin{equation}
+  \max_W \text{Tr}(Y^T W W^T Y) = \max_{w_j, j = 1,..., k} \sum_{i = 1}^d\sum_{i = 1}^k\sigma_i^2 u_i^T w_j w_j^T u_i
+  \label{3_1}
+\end{equation}
+
+Since $k \leq d $ and $U$ is an orthogonal matrix, any vector $w_j, \, j = 1,..., k$ can be expressed in terms of the columns in $U$. Thus substituting $w_j = U a_j$ into the RHS of equation (\ref{3_1}) yields the following
+
+\begin{align}
+  & \max_{w_j, j = 1,..., k} \sum_{i = 1}^d\sum_{i = 1}^k\sigma_i^2 u_i^T w_j w_j^T u_i = \max_{a_j, j = 1,..., k} \sum_{i = 1}^d\sum_{i = 1}^k\sigma_i^2 u_i^T U a_j a_j^T U^T u_i \\
+  & = \max_{a_j, j = 1,..., k} \sum_{i = 1}^d\sum_{i = 1}^k\sigma_i^2 e^T_i a_j a_j^T e_i = \max_{a_j, j = 1,..., k} \sum_{i = 1}^d\sum_{i = 1}^k\sigma_i^2 a_{ij}^2 \\
+  & = \max_{a_j, j = 1,..., k} \sum_{i = 1}^k a_j^T \Lambda a_j 
+\end{align}

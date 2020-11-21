@@ -1,0 +1,45 @@
+\section*{Problem 4}
+
+In order to show that it provides a correct estimation of the Gram matrix $S$ we need to prove that we can derive a similarity matrix $S$ from a matrix $D \text{where} (D)_{ij} = d_{ij} = (z_i - z_j)^T(z_i - z_j)$ such that
+\begin{enumerate}
+  \item  $S = Z^TZ$
+  \item $Z$ gives $0$ reconstruction error for the matrix $D$
+\end{enumerate}
+
+Normally $s_{ij} = y_iT y_j$, we claim that it is valid to express
+
+\begin{equation}
+  s_{ij} = - \frac{1}{2} (d_{ij}^2-d_{1j}^2-d_{1i}^2)
+  \label{4_1}
+\end{equation}
+where
+\begin{equation}
+  d_{ij}^2 = (y_i - y_j)^2 = y_i^2 + y_j^2 - 2y_i y_j
+    \label{4_2}
+\end{equation}.
+
+Substituting (\ref{4_2}) into (\ref{4_1}) yields the following
+\begin{align}
+  s_{ij} & = -\frac{1}{2} (d_{ij}^2 - d_{1j}^2 - d_{1i}^2) \\
+  & = - \frac{1}{2} (y_i^2 + y_j^2 -2y_i^Ty_j - y_1^2 - y_i^2 + 2y_1^Ty_i - y_1^2 - y_j^2 + 2y_1^Ty_j) \\
+  & = - \frac{1}{2} (-2y_i^Ty_j - 2y_1^2 + 2y_1^Ty_i + 2y_1^Ty_j) \\
+  & = (y_i - y_1)^T(y_j - y_1) = z_i^T z_j
+  \label{4_3}
+\end{align}
+
+Let $T$ be a matrix of the same size as $Y$, with all columns as $y_1$. Then the Gram matrix $S$ can be written as
+
+\begin{equation}
+  S = (Y-T)^T(Y-T) = Z^T Z
+\end{equation}
+Thus is 1. shown. Now we want to show 2.
+
+We know that $d_{i,j} = (z_i - z_j)^T(z_i - z_j)$ and by substituting the result from equation (\ref{4_3}) we get the following
+
+\begin{align}
+  d_{ij}^2 & = (z_i - z_j)^T(z_i - z_j) \\
+  & = (y_i - y_1 - (y_j - y_1))^T(y_i - y_1 - (y_j - y_1)) \\
+  & = (y_i - y_j)^T(y_i - y_j)
+\end{align}
+
+Which shows that $Z$ gives $0$ reconstruction error for the distance matrix $D$.

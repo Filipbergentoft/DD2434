@@ -1,1 +1,74 @@
-\section{Problem 1}
+\section*{Problem 1}
+It is assumed throughout this problem that whenever a matrix $A$ is referenced, it is a real and symmetric matrix of size $n \times n$.
+\\
+
+\textbf{Part (i):} \textit{Prove that a real symmetric matrix has real eigenvalues}
+
+Let $\lambda$ be an eigenvalue to $A$ with a corresponding vector $v$, which is by the definition of an eigenvector non-zero.
+
+The norm of a complex vector $z$ is given by $ \lVert z \rVert = \sqrt{z^T \overline{z}}$ and is non-zero for all $z \in \mathbb{C}$ except $z = 0$.
+
+Given that $A$ is real we can use that
+
+\begin{equation}
+  \overline{Av} = \overline{\lambda v} = A \overline{v} = \overline{\lambda v}
+  \label{real_matrix}
+\end{equation}
+
+Then we can expand $v^T A \overline{v}$ in the two following ways
+
+\begin{equation}
+  v^T A \overline{v} = v^T (A \overline{v}) = \bigg\{ \text{Using equation (\ref{real_matrix})}\bigg\} = v^T \overline{\lambda} \overline{v} =  \overline{\lambda} v^T  \overline{v} = \overline{\lambda} \lVert v \rVert ^2
+  \label{i_1}
+\end{equation}
+
+\begin{equation}
+  v^T A \overline{v} = (A^T v)^T \overline{v} = \bigg\{A = A^T \bigg\} = (A v)^T \overline{v} = \lambda v^T \overline{v} = \lambda \lVert v \rVert ^2
+  \label{i_2}
+\end{equation}
+
+Thus since equation (\ref{i_1}) and (\ref{i_2}) are equal (from the left hand side) we get that
+
+\begin{equation}
+  \overline{\lambda} \lVert v \rVert^2= \lambda \lVert v \rVert^2 \Rightarrow \lambda = \overline{\lambda}
+\end{equation}
+
+ since $v$ is non-zero by the definition of an eigenvector. Thus are the eigenvalues of a real and symmetric matrix real.
+\\
+
+\textbf{Part (ii):} qqq: Detta måste fixas!!
+\\
+
+\textbf{Part (iii):} \textit{Prove that a positive semi definite matrix has non negative eigenvalues}
+
+Let $B$ be a complex $n \times n$ positive semi-definite matrix accompanied by an eigenvalue $\lambda$ and an associated eigenvector $v$. By the definition of a positive semi-definite matrix we know that for any vector $z \in \mathbb{C}$ it holds that $\overline{z}^T B z \geq 0$. The following thus holds
+
+\begin{equation}
+  \overline{v}^T B v = \overline{v}^T \lambda v = \lambda \overline{v}^T v = \lambda \lVert v \rVert^2 \geq 0
+  \label{iii_1}
+\end{equation}
+
+where $\lVert v \rVert^2$ is necessarily positive since eigenvectors are by definition non-zero. This implies that $\lambda \geq 0$, which was to be proven.
+\\
+
+\textbf{Part (iv):} \textit{Let $A \in \mathbb{R}^{n \times n}$ symmetric and positive semi-definite matrix. Define a matrix $D = \{ D | D_{ij} = A_{ii} + A_{jj} - 2A_{ij} \}$. Show that there exists $n$ vectors $v_1, ..., v_n, \; v_i \in \mathbb{R}^n \; \forall i$} such that $D_{ij} = \lVert v_i - v_j \rVert^2_2$.
+
+\begin{equation}
+  D_{ij} = \lVert v_i - v_j \rVert^2_2 = v_i^T v_i + v_j^T v_j - 2v_i^T v_j
+\end{equation}
+
+Thus, if we can show that any matrix $A \in \mathbb{R}^{n \times n}$ that fulfils the given conditions, can have each of its elements expressed as a dot product between $n$ given vectors $v_1, ..., v_n, \; v_i \in \mathbb{R}^n \; \forall i$ we have shown what is asked.
+
+Given that $A$ is symmetric and positive semi-definite it can be decomposed into the following eigen-decomposition $A = Q \Lambda Q^T$ where $\Lambda$ is a diagonal matrix of real eigenvalues (since A is PSD) and $Q$ is an orthogonal matrix of eigenvectors of $A$. The decomposition can then be rewritten in the following manner
+
+\begin{equation}
+  A = Q \Lambda Q^T = (\Lambda^{-\frac{1}{2}} Q^T)^T (\Lambda^{-\frac{1}{2}} Q^T) = V^T V
+\end{equation}
+
+If we thus choose every $v_i, \; i = 1 ,..., n$ to be the $i$:th column in the matrix $(\Lambda^{-\frac{1}{2}} Q^T)$ we get that $A_{ij} = (V^T V)_{ij} = v_i^T v_j$ which yields the final result
+
+\begin{equation}
+  D_{ij} = A_{ii} + A_{jj} - 2A_{ij} = v_i^T v_i + v_j^T v_j - 2v_i^T v_j = \lVert v_i - v_j \rVert^2_2
+\end{equation}
+
+which was to be proven.

@@ -1,14 +1,12 @@
 # Fdb version 3
-["pdflatex"] 1605025331 "problem_1.tex" "problem_1.pdf" "problem_1" 1605025332
+["pdflatex"] 1605280184 "problem_3.tex" "problem_3.pdf" "problem_3" 1605280184
   "/usr/local/texlive/2019/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
-  "/usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1136768653 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
   "/usr/local/texlive/2019/texmf-dist/web2c/texmf.cnf" 1557092114 35484 cb1661360667bf4db662a8895053b554 ""
-  "/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1557342064 3277517 23507ed665b4dd9046f0f2a94bbef2be ""
   "/usr/local/texlive/2019/texmf-var/web2c/pdftex/pdflatex.fmt" 1559938713 4259635 3d157066fa3775504e02463674147c86 ""
   "/usr/local/texlive/2019/texmf.cnf" 1557341546 577 d150fef99ac436ad1156e86b0892f6ef ""
-  "problem_1.aux" 1604935206 8 a94a2480d3289e625eea47cd1b285758 ""
-  "problem_1.tex" 1605025331 3855 4eff5379cf305105a8dd3953937f4c0a ""
+  "problem_3.aux" 1605276485 8 a94a2480d3289e625eea47cd1b285758 ""
+  "problem_3.tex" 1605280172 1791 20f824d08c531288a9ec96f953a6eb43 ""
   (generated)
-  "problem_1.log"
-  "problem_1.pdf"
+  "problem_3.log"
+  "problem_3.pdf"

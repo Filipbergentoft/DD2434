@@ -1,0 +1,53 @@
+\section*{Problem 5}
+
+
+We are considering the classical MDS when $Y \in \mathbb{R}^{d \times n}$ is known which implies that we can construct a similarity matrix $S = Y^T Y$. An MDS embedding can then be obtained by performing eigen-decomposition on $S$ which yields the following
+
+\begin{equation}
+  S = Y^T Y = Q \Lambda Q^T = (\Lambda^{-\frac{1}{2}}Q^T)^T(\Lambda^{-\frac{1}{2}}Q^T)
+\end{equation}
+
+where $\Lambda$ is a diagonal matrix with eigenvalues of $S = Y^T Y$ sorted in descending order.
+
+The latent matrix $X$ can then be chosen as
+
+\begin{equation}
+  X = I_{k \times n} \Lambda^{-\frac{1}{2}}Q^T , \; k < d
+\end{equation}
+
+However, this can also be written in terms of the SVD of $Y = U \Sigma V^T$
+
+\begin{align}
+  S & = Y^T Y = V \Sigma^T U^T U \Sigma V^T = V \Sigma^T \Sigma V^T = (\Sigma V^T)^T(\Sigma V^T) \\
+  & = (\Lambda^{-\frac{1}{2}}Q^T)^T(\Lambda^{-\frac{1}{2}}Q^T)
+\end{align}
+Since $\Lambda$ and $\Sigma$ has ordered diagonals by magnitude and $V$ contains the right singular vectors we know that $V = Q$ which gives that
+\begin{equation}
+  \Lambda^{-\frac{1}{2}}Q^T = \Sigma V^T
+\end{equation}
+
+Thus can the latent matrix also be expressed as
+
+\begin{equation}
+  X = I_{k \times n} \Sigma V^T , \; k < d
+  \label{5_1}
+\end{equation}
+
+In PCA we decompose $Y$ into its SVD, yielding
+
+\begin{equation}
+  Y = U \Sigma V^T
+\end{equation}
+
+The latent matrix is then chosen as
+
+\begin{align}
+  X & = (U I_{n \times k})^T Y = I_{k \times n} U^T Y \\
+  & =  \bigg\{Y = U \Sigma V^T \Rightarrow U^T Y = \Sigma V^T \bigg\} \\
+  & = I_{k \times n} \Sigma V^T , \; k < d
+  \label{5_2}
+\end{align}
+
+Comparing equations (\ref{5_1}) and (\ref{5_2}) we see that the results are equivalent. \\
+
+Regarding the computational efficiency I believe that there are two areas to consider: computational complexity and numerical accuracy. The complexities of computing the SVD and eigen-decomposition are similar and somewhat dependant on the properties of the input matrix, eigen-decomposition often performing a bit better. However, for the MDS we are required to perform a matrix multiplication beforehand which both introduces additional cost in time but can also introduce issues with numerical accuracy causing the resulting eigen-decomposition to have imaginary parts. For this reason the SVD should be preferred. 
