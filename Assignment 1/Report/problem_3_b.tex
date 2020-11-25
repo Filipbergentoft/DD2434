@@ -1,0 +1,68 @@
+\section*{Problem 3}
+Want to maximise the expression $tr(Y^T W W^T Y)$ where $Y \in \mathbb{R}^{d \times n}$,
+ $W \in \mathbb{R}^{d \times k}, \; k < d$ under the condition that $W$ has orthonormal columns which implies that $W^T W = I_k$. In order to achieve this we want to use Lagrange multipliers, and for mathematical convenience we will use the cyclic property of trace to shift around the matrices in the expression in the following manner.
+
+ \begin{equation}
+   tr(Y^T W W^T Y) =  tr(Y Y^T W W^T) = tr(W^T Y Y^T W)
+ \end{equation}
+
+We thus want to maximise $tr(W^T Y Y^T W)$ subject to $W^T W - I_k = 0$ which yields the following Lagrangian function
+
+\begin{align}
+  L & = tr(W^T Y Y^T W) - \sum_{i = 1}^k \sum_{j = 1}^k \lambda_{ij}(w_i^T w_j - \mathbf{1} \{i = j \}) \\
+  & = \sum_{i = 1}^k w_i^T Y Y^T w_i - \sum_{i = 1}^k \sum_{j = 1}^k \lambda_{ij}(w_i^T w_j - \mathbf{1} \{i = j \})
+\end{align}
+
+where $\mathbf{1}$ is the indicator function.
+
+Taking the derivative with respect to the $\lambda_{lj}$ only results in the initially stated condition that
+
+\begin{align}
+  W^T W = I_k
+  \label{cond_1}
+\end{align}
+
+Taking the derivative with respect to $w_l, \; l = 1,..., k$ yields
+
+\begin{align}
+  \frac{\partial L}{\partial w_l} & = 2 Y Y^T w_l - \sum_{j = 1}^k (\lambda_{lj} w_j + \lambda_{jl} w_j) = 0
+  \label{3_1}
+\end{align}
+
+By letting $\Lambda$ be a matrix with elements $(\Lambda)_{lj} = \lambda_{lj}$ equation (\ref{3_1}) can be expressed using matrices for all $l = 1,..., n$.
+
+\begin{align}
+  2 Y Y^T W - W(\Lambda^T + \Lambda) = 0 \Rightarrow Y Y^T W = W \; \frac{\Lambda^T + \Lambda}{2}
+  \label{3_2}
+\end{align}
+
+Noting that $\frac{\Lambda^T + \Lambda}{2}$ is trivially symmetric it can be diagonalised in the following manner: $\frac{\Lambda^T + \Lambda}{2} = PDP^{-1}$. Substituting this into equation (\ref{3_2}) results in
+
+\begin{align}
+  & Y Y^T W = W \; \frac{\Lambda^T + \Lambda}{2} = W PDP^{-1} \\
+  & \Rightarrow  W^T Y Y^T W = W^T W PDP^{-1} = \bigg\{ W^T W = I_k \text{ by } (\ref{cond_1})\bigg\} = PDP^{-1} \\
+  \label{3_3}
+  & \Rightarrow P^{-1} W^T Y Y^T W P = P^{-1} PDP^{-1} P \\
+  & \Rightarrow P^{-1}W^T Y Y^T WP = D
+\end{align}
+
+Thus is $Y Y^T$ diagonalised by $WP$ and $D$ thus consist of $k$ eigenvalues of $Y Y^T$ and by substituting equation (\ref{3_3}) into the original trace expression we get
+
+\begin{align}
+  tr(W^T Y Y^T W) = tr(PDP^{-1}) = tr(P^{-1} P D) = tr(D) = \sum_{i=1}^k d_i
+\end{align}
+
+where $d_i$ are eigenvalues of $Y Y^T$. Thus in order to maximise this we just choose $d_i, i = 1,2,...,k$ to be the $k$ largest eigenvalues of $Y Y^T$.
+
+Now to show that if we select $W = U_k$ we get the same maximum value. Using the skinny SVD of $Y = U \Sigma V^T$ and substituting into the original trace expression we get
+
+\begin{align}
+  tr(Y^T W W^T Y) & = tr(V \Sigma^T U^T W W^T U \Sigma V^T) \\
+  & = tr(V^TV \Sigma U^T W W^T U \Sigma) = tr(\Sigma U^T W W^T U \Sigma) \\
+  & = tr(\Sigma U^T U_k U_k^T U \Sigma) = tr((\Sigma U^T U_k) (\Sigma U^T U_k)^T) \\
+  & = tr((\Sigma I_{d \times k}) (\Sigma I_{d \times k})^T) = tr{\Sigma_{kxk}^2} \\
+  & = \sum_{i=1}^k \sigma_i^2 = \bigg\{k \text{ largest singular valies} \bigg\} = \sum_{i=1}^k d_i
+\end{align}
+
+
+Thus is $tr(W^T Y Y^T W)$ subject to $W^T W - I_k = 0$ maximised by choosing $W = U_k$ and the maximum value is given by $\sum_{i=1}^k \sigma_i^2$.
