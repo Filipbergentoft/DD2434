@@ -62,7 +62,7 @@ Thus, if we can show that any matrix $A \in \mathbb{R}^{n \times n}$ that fulfil
 Given that $A$ is symmetric and positive semi-definite it can be decomposed into the following eigen-decomposition $A = Q \Lambda Q^T$ where $\Lambda$ is a diagonal matrix of real eigenvalues (since A is PSD) and $Q$ is an orthogonal matrix of eigenvectors of $A$. The decomposition can then be rewritten in the following manner
 
 \begin{equation}
-  A = Q \Lambda Q^T = (\Lambda^{-\frac{1}{2}} Q^T)^T (\Lambda^{-\frac{1}{2}} Q^T) = V^T V
+  A = Q \Lambda Q^T = (\Lambda^{\frac{1}{2}} Q^T)^T (\Lambda^{\frac{1}{2}} Q^T) = V^T V
 \end{equation}
 
 If we thus choose every $v_i, \; i = 1 ,..., n$ to be the $i$:th column in the matrix $(\Lambda^{-\frac{1}{2}} Q^T)$ we get that $A_{ij} = (V^T V)_{ij} = v_i^T v_j$ which yields the final result
