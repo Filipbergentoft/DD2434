@@ -6,7 +6,18 @@ In order to enable the applications of the embeddings the data has to be preproc
 
 The remaining attributes are all boolean with values in $\{ 0,1 \}$ except the attribute 'legs' which takes values in $\{ 0, 2, 4, 6, 8 \}$. This attribute thus takes on values up to $8$ times the magnitude in comparison to the remaining attributes which corresponds to it having an importance weight of $8$ and the other a weight of $1$ when taking the distance between points. For this reason the magnitude of 'legs' will be scaled down by $8$ times, causing it to instead take values in  $\{ 0, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1 \}$.
 
+\subsection*{Visualisation of data}
+In order to project the data in 2D such that similar animals are projected close to one another the first two resulting latent variables from a method will be plotted against each other as they contain the most information about the data set as a result of the sorting of the singular values and eigenvalues in descending order.
+
+
 \subsection*{PCA}
+The implementation of the PCA method is short using Numpy's Singular Value Decomposition function and following the exact method presented in the lecture. The only concern I had was the centring of the data matrix as it removes the boolean nature of the matrix. However I argue that this only alter the values and does not remove the information of the attributes rendering the action as viable.
+\\
+
+The following visualisation was achieved using PCA.
+
+
+
 
 \subsection*{MDS}
 

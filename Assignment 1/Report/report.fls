@@ -213,6 +213,9 @@ INPUT problem_5.tex
 INPUT problem_5.tex
 INPUT problem_6.tex
 INPUT problem_6.tex
+INPUT clusters_problem_6.png
+INPUT ./clusters_problem_6.png
+INPUT ./clusters_problem_6.png
 INPUT problem_7.tex
 INPUT problem_7.tex
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm
