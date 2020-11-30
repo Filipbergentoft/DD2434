@@ -50,4 +50,11 @@ The latent matrix is then chosen as
 
 Comparing equations (\ref{5_1}) and (\ref{5_2}) we see that the results are equivalent. \\
 
-Regarding the computational efficiency I believe that there are two areas to consider: computational complexity and numerical accuracy. The complexities of computing the SVD and eigen-decomposition are similar and somewhat dependant on the properties of the input matrix, eigen-decomposition often performing a bit better. However, for the MDS we are required to perform a matrix multiplication beforehand which both introduces additional cost in time but can also introduce issues with numerical accuracy causing the resulting eigen-decomposition to have imaginary parts. For this reason the SVD should be preferred. 
+Regarding which method to choose in terms of the computational complexity we need to look at the complexities of both eigen-decomposition and singular value decomposition as well as the sizes of the matrices that they are performed on.
+
+\begin{enumerate}
+  \item PCA: Requires SVD performed on  $Y \in \mathbb{R}^{d \times n}$ which is $\mathbb{O}(\text{min}(nd^2,n^2d))$ if one makes use of the transpose trick.
+  \item MDS: Requires eigen-decomposition on $S = Y^TY \in \mathbb{R}^{n \times n}$ which is $\mathbb{O}(n^3)$.
+\end{enumerate}
+
+The preferable method thus depend on the relation between $n$ and $d$. If $n > d$, SVD is preferable and if $n < d$ the eigen-decomposition if preferable. 

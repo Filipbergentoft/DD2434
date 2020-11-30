@@ -79,24 +79,29 @@ In the implementation of MDS it was proposed to infer the importance of differen
 
 One concern that arose during the implementation of MDS was that the eigenvalues and eigenvectors had small complex components even though the matrix was symmetric. I believe that this was caused by the numerical imprecision of the computer and solved it by simply removing the complex components.
 
-The following visualisation was achieved
-
+The following visualisations were achieved
 \begin{figure}[H]
-  \centering
-  \includegraphics[width = 0.8\linewidth]{../Visualization_MDS_no_weights.png}
-  \caption{Visualisation MDS, all weights equal to $1$}
-  \label{vis_PCA}
-\end{figure}
+   \centering
+   \begin{subfigure}[b]{0.6\linewidth}
+       \centering
+       \includegraphics[width=\textwidth]{../Visualization_MDS_no_weights.png}
+       \caption{All weights equal to $1$}
+       \label{fig:vis_MDS1}
+   \end{subfigure}
+   \hspace{\fill}
+   \begin{subfigure}[b]{0.6\linewidth}
+       \centering
+       \includegraphics[width=\textwidth]{../Visualization_MDS_with_weights.png}
+       \caption{$w_{legs} = 4, \; w_{tail} = 4$, rest equal to $1$}
+       \label{fig:vis_MDS2}
+   \end{subfigure}
+      \caption{MDS method}
+      \label{fig:MDS}
 
-Here one can see that using all weights equal to $1$ yields a very similar result to the one of PCA only that the points are mirrored over both the y and x axis which I believe is a result of the eigenvalue algorithm of Numpy since one can change the sign of an eigenvector and it still fulfils the eigenvalue equation.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width = 0.8\linewidth]{../Visualization_MDS_with_weights.png}
-  \caption{Visualisation MDS, $w_{legs} = 4, w_{tail} = 4$}
-  \label{vis_PCA}
 \end{figure}
+In (\ref{fig:vis_MDS1}) one can see that using all weights equal to $1$ yields a very similar result to the one of PCA only that the points are mirrored over both the y and x axis which I believe is a result of the eigenvalue algorithm of Numpy since one can change the sign of an eigenvector and it still fulfils the eigenvalue equation.
 
-Here the results become a bit more interesting where I have chosen to put more weight into the number of legs an animal has and whether or not it is an aquatic animal. This has caused a clear sep
+In (\ref{fig:vis_MDS2}) the results become a bit more interesting where I have chosen to put more weight into the number of legs an animal has and whether or not it is has a tail. This has caused further separation of the data and for example the cluster of type $1$ at $(-1.2,0.5)$ seems to have the primal commonality that they all have tails (apparently a fruit bat has a tail) and secondly that they have four legs with the exception of the fruit bat which I believe is why it is in the outer proximity of the cluster.
 
 
 \subsection*{Isomap}
@@ -119,8 +124,54 @@ The implementation of Isomap was solved in the following manner
  \caption{Isomap method}
 \end{algorithm}
 
-Argue why you should not use quadratic distance
+In order to find the shortest path I used SciPy's implementation of the graph shortest path where I noticed even though all possible neighbours were used the returning distance matrix had a small perturbation in relation to the original distance matrix. A result that is unintuitive to me, however as the perturbations were small the end result was not affected.
+
+The following visualisations were achieved
+\begin{figure}[H]
+   \centering
+   \begin{subfigure}[b]{0.6\linewidth}
+       \centering
+       \includegraphics[width=\textwidth]{../Visualization_Isomap_n_10.png}
+       \caption{Number of neighbours set to $10$}
+       \label{fig:isomap 10}
+   \end{subfigure}
+   \hspace{\fill}
+   \begin{subfigure}[b]{0.6\linewidth}
+       \centering
+       \includegraphics[width=\textwidth]{../Visualization_Isomap_n_30.png}
+       \caption{Number of neighbours set to $30$}
+       \label{fig:isomap 30}
+   \end{subfigure}
+      \caption{Isomap method}
+      \label{fig:isomap}
+
+\end{figure}
+
+As I mentioned previously Isomap converges to the same result as both MDS and PCA (although with small perturbations) when the number of neighbours are increased. This behaviour can be seen in figure (\ref{fig:isomap 30}) where it has started to converge towards figure (\ref{fig:vis_MDS1}) where MDS has uniform weights. For this reason I opted for a low amount of neighbours in order to capture the structure of the data manifold and the final choice was set to $10$ neighbours which can be seen in figure (\ref{fig:isomap 10}). In figure (\ref{fig:isomap 10}) there is great separation between the different types of animals which gives reason to believe that Isomap captures the underlying structure of the data really well.
+
 
 \subsection*{Comparison}
+The final choice for each method is plotted in the three figures below.
 
-Even though no distance in PCA, could still infer importance by scaling attributes.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.8\linewidth]{../Visualization_PCA.png}
+  \caption{PCA}
+  \label{fig:PCA final}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.8\linewidth]{../Visualization_MDS_with_weights.png}
+  \caption{MDS, $w_{legs} = 4, \; w_{tail} = 4$, rest equal to $1$}
+  \label{fig:MDS final}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.8\linewidth]{../Visualization_Isomap_n_10.png}
+  \caption{Isomap, number of neighbours set to $10$}
+  \label{fig:isomap 10 final}
+\end{figure}
+
+In order to make the final choice of a method I will look at how well the method captures the know relations, I.E. the relations within the designated types. This is based on the assumption that if a method correctly captures the known similarities and clusters them together it gives reason to believe that it should extrapolate well and also capture the similarities between other types of animals. Based on the plots in figures (\ref{fig:PCA final}, \ref{fig:MDS final}, \ref{fig:isomap 10 final}) Isomap perform best in clustering within types and should thus by the above assumption also be best at capturing the similarities between different types of animals. Therefore is Isomap the preferable method.

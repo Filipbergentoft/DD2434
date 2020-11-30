@@ -1,20 +1,10 @@
 \section*{Problem 2}
 
-Given that we want to do PCA using $k$ components on a matrix $Y \in \mathbb{R}^{p \times n}, \; p \leq n$ where the columns correspond to data points, we can decompose $Y$ in the following manner using SVD.
+Let $Y = U \Sigma V^T$ be the SVD of $Y$. In PCA we want to do either of the following:
 
-\begin{equation}
-  Y = U \Sigma V^T
-\end{equation}
+\begin{enumerate}
+  \item Center the \textit{columns} in $Y$ when the latent matrix $W$ is chosen as the $k$ first columns of $U$
+  \item Center the \textit{rows} in $Y$ when the latent matrix $W$ is chosen as the $k$ first columns in $V$
+\end{enumerate}
 
-Where $U$ contains the left singular vectors of $Y$ and $V$ contains the right singular vectors of $Y$.
-
-The transformation matrix $W$ is then given by the first $k$ columns of the matrix $U$.
-
-If we instead want to perform PCA using $k$ components on $Y^T$ we can use that
-
-$Y^T = (U \Sigma V^T)^T = V \Sigma U^T$
-
-The transformation matrix $\widetilde{W}$ can thus be chosen as the first $k$ columns in $V$.
-
-
-Thus is a single SVD computation sufficient for computing PCA on both columns and rows. 
+Thus if we would want to do PCA on both the columns and rows of $Y$ using the \textit{same} SVD it would require us to center both the rows and columns of $Y$ at the same time which is \textit{not possible} in general. Thus is it not possible to perform PCA on both rows and columns of $Y$ using the same SVD.
