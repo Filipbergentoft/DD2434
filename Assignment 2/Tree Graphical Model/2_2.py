@@ -22,9 +22,11 @@
     Note: The alphabet "K" is K={0,1,2,3,4}.
 """
 
+from os import DirEntry
 import numpy as np
 from Tree import Tree
 from Tree import Node
+import os
 
 
 def calculate_likelihood(tree_topology, theta, beta):
@@ -54,11 +56,12 @@ def main():
     print("This file is the solution template for question 2.2.")
 
     print("\n1. Load tree data from file and print it\n")
-
-    filename = "data/q2_2/q2_2_small_tree.pkl"  # "data/q2_2/q2_2_medium_tree.pkl", "data/q2_2/q2_2_large_tree.pkl"
+    directory = '/Users/filipbergentoft/Desktop/Github/DD2434/Assignment 2/'
+    filename = directory + "data/q2_2/q2_2_small_tree.pkl"  # "data/q2_2/q2_2_medium_tree.pkl", "data/q2_2/q2_2_large_tree.pkl"
     t = Tree()
     t.load_tree(filename)
     t.print()
+    t.print_topology()
     print("K of the tree: ", t.k, "\talphabet: ", np.arange(t.k))
 
     print("\n2. Calculate likelihood of each FILTERED sample\n")
