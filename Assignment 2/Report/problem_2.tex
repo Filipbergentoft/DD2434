@@ -1,0 +1,65 @@
+\section*{2.2 Likelihood of a Tree Graphical Model}
+
+\subsection*{Question 2.2.1:}
+\textit{Implement a dynamic programming algorithm that, for a given $T, \Theta \text{ and } \beta$ computes $p(\beta | T, \Theta)$.}
+
+$T$ is a binary tree with a vertex set $V(T)$ and a leaf set $L(T)$. For each vertex $v \in V(T)$ there is an associated random variable $X_v \in [K]$ with a corresponding CPD $\theta_v = p(X_v|x_{pa(v)})$ which is a categorical distribution. $\beta$ is defined as the set of values of all leafs in $T$ such that $\beta = \{x_l \, : \, l \in L(T)$.
+
+In order to compute $p(\beta | T, \Theta)$ we need to find an expression that can be used for dynamic programming, I.E. splitting up the full problem into smaller subproblems. By looking at the definition of $s$ in equation (\ref{def_s})
+
+\begin{equation}
+  s(u,i) = p(X_{Observed \, \cap \, \downarrow u}| X_u = i)
+  \label{def_s}
+\end{equation}
+
+and letting the root node of the tree being denoted by $r$, one can use that if $u$ is chosen as the root $r$ we get the following expression
+
+\begin{align*}
+  s(r,i) = p(X_{Observed \, \cap \, \downarrow r}| X_r = i) = \bigg\{ X_{Observed \, \cap \, \downarrow r} = \beta \bigg\} = p(\beta | X_r = i, T, \Theta)
+\end{align*}
+
+We can then marginalise this using Bayes' theorem in the following manner
+
+\begin{align}
+  p(\beta | T, \Theta) & = \sum_i p(\beta, X_r = i| T, \Theta) = \sum_i p(\beta | X_r = i, T, \Theta)p(X_r = i) \\
+  & = \sum_i s(r,i)p(X_r = i)
+  \label{sol_eq}
+\end{align}
+
+Using that $T$ is a binary tree and thus if $v, w$ are children to a node $u$ then
+
+\begin{align}
+  s(u,i) & = p(X_{Observed \, \cap \, \downarrow u}| X_u = i)\nonumber \\
+  & = p(X_{Observed \, \cap \, \downarrow v}| X_v = i)
+  p(X_{Observed \, \cap \, \downarrow w}| X_w = i) \nonumber\\
+  & = \bigg( \sum_j s(v,j)p(X_v = j| x_u = i) \bigg )\bigg( \sum_j s(w,j)p(X_w = j| x_w = i) \bigg )
+  \label{traverse_eq}
+\end{align}
+
+A special case is when the node $u$ is a leaf node, then the following holds
+
+\begin{align}
+  s(u,i) = \begin{cases} 1, & X_u = i \\ 0, & otherwise\end{cases}
+  \label{eq_3}
+\end{align}
+
+
+Equation (\ref{sol_eq}) can then be computed using dynamic programming by starting at the leaf nodes using equation (\ref{eq_3}) and then traversing up the nodes in the tree to the root using equation (\ref{traverse_eq}) one level at a time and storing the achieved probabilities $s$ along the way.
+
+
+\subsection*{Question 2.2.2:}
+\textit{Apply your algorithm to the graphical model and data provided separately.}
+\\
+
+The following likelihoods were achieved when applying my implementation of the dynamic programming algorithm on the given trees.
+
+
+\begin{center}
+    \begin{tabular}{ | l | l | l |  l | l | l |}
+    \hline
+    Tree sample: & $0$ & $1$ & $2$ & $3$ & $4$ \\ \hline
+    Small tree & $0.016$ & $0.015$ & $0.011$ & $0.007$ & $0.041$ \\ \hline
+    Medium tree & $4.336 \cdot 10^{-18}$ & $3.094 \cdot 10^{-20}$ & $1.050 \cdot 10^{-16}$ & $6.585 \cdot 10^{-16}$ & $1.488 \cdot 10^{-18}$ \\ \hline
+    Large tree & $3.288 \cdot 10^{-69}$ & $1.109 \cdot 10^{-66}$ & $2.522 \cdot 10^{-68}$ & $1.242 \cdot 10^{-66}$ & $3.535 \cdot 10^{-69}$ \\ \hline
+    \end{tabular}
+\end{center}

@@ -88,7 +88,7 @@ def main():
     print("\n1. Load tree data from file and print it\n")
     directory = '/Users/filipbergentoft/Desktop/Github/DD2434/Assignment 2/Tree Graphical Model/'
     #qqq: Need to change this to this years verison!!
-    filename = directory + "data/q2_2/q2_2_medium_tree.pkl"  # "data/q2_2/q2_2_medium_tree.pkl", "data/q2_2/q2_2_large_tree.pkl"
+    filename = directory + "data/q2_2/q2_2_large_tree.pkl"  # "data/q2_2/q2_2_medium_tree.pkl", "data/q2_2/q2_2_large_tree.pkl"
     t = Tree()
     t.load_tree(filename)
     #t.print()

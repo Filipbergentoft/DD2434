@@ -7,7 +7,29 @@
 \textbf{Answer:} No, $\mu_{r,c}$ and $\mu_{r,c+1}$ are dependent.
 
 \subsection*{Question 2.1.2:}
-\textit{In the graphical model of Figure \ref{figure1}, is $X_{r,c} \perp X_{r,c+1} \| \{mu_{r,c}, \mu_{r,c+1} \}$?}
+\textit{In the graphical model of Figure \ref{figure1}, is $X_{r,c} \perp X_{r,c+1} | \{mu_{r,c}, \mu_{r,c+1} \}$?}
 \\
 
 \textbf{Answer:} Yes, $X_{r,c}$ and $X_{r,c+1}$ are d-separated and thus independent.
+
+\subsection*{Question 2.1.3:}
+\textit{Give a minimal set of variables A such that $X_{r,c} \perp \mu_0 | A$}
+\\
+
+\textbf{Answer:} The minimal set of variables are given by$A = \{ \mu_{r,c}, \mu_{r-1,c}, \mu_{r+1,c}, \mu_{r,c-1}, \mu_{r,c+1} \}$
+
+\subsection*{Question 2.1.4:}
+\textit{In figure \ref{figure2}, is $Z \perp X | C$ where $Z = \{ Z_m^n \, : \, n \in [N], \, m \in [M] \}$, $X = \{ X_m^n \, : \, n \in [N], \, m \in [M] \}$ and $C^n = \{ C^n \, : \, n \in [N] \} $? }
+\\
+
+\textbf{Answer:} No, $Z$ and $X$ are not d-separated given $C$ and are thus dependent.
+
+\subsection*{Question 2.1.5:}
+\textit{In figure \ref{figure2}, is $A \perp e | B$ where $A = \{ A^k_{i,j} \, : \, k \in [K], i,j \in [I] \} $, $e = \{e^k_{i,r} \, : \, k \in [K], i \in [I], r \in [R] \}$ and $B = \{ Z_m^n \, : \, m \in [M], m \text{ odd} \} \cup \{ X_m^n \, : \, m \in [M], m \text{ even} \}$? }
+
+\textbf{Answer:} No, $A$ and $e$ are not d-separated given $B$ and are thus dependent.
+
+\subsection*{Question 2.1.6:}
+\textit{In figure \ref{figure2}, give a minimal set of variables $B$ such that $A \perp X | B$ where $A = \{ A^k_{i,j} \, : \, k \in [K], i,j \in [I] \} $ and $X = \{ X_m^n \, : \, n \in [N], \, m \in [M] \}$}
+
+\textbf{Answer:} The minimal set of variables are given by $$B = \{ Z_m^n \, : \, n \in [N], \, m \in [M] \} \cup \{ C^n \, : \, n \in [N] \} $$

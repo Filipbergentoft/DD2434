@@ -87,7 +87,7 @@ def main():
         'edges': {(0, 3, 5), (3, 5, 2), (5, 4, 10), (4, 1, 3), (1, 0, 8), (0, 2, 1), (2, 3, 6), (2, 5, 4), (2, 4, 9),
                   (2, 1, 7)}
     }
-
+    print(graph['edges'])
     print("\nRun Kruskal's algorithm.")
 
     min_spanning_tree = kruskal(graph)
