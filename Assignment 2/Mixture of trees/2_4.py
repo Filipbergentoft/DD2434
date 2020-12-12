@@ -39,10 +39,14 @@
     in terms of Robinson-Foulds metric and the likelihoods.
     """
 
+
 import numpy as np
 import matplotlib.pyplot as plt
 from Tree import TreeMixture
+from Tree import Tree
 from Kruskal_v2 import maximum_spanning_tree
+from help_functions import q_joint, q_marginal, I_element, mutual_information, \
+    create_ordered_pairs, create_ordered_nodes, create_tree_attributes, create_graph, sample_likelihood, create_tree_attributes1
 
 def save_results(loglikelihood, topology_array, theta_array, filename):
     """ This function saves the log-likelihood vs iteration values,
@@ -57,58 +61,7 @@ def save_results(loglikelihood, topology_array, theta_array, filename):
     np.save(topology_array_filename, topology_array)
     np.save(theta_array_filename, theta_array)
 
-
-def sample_likelihood(tree, sample, pi_tree):
-    responsibility = np.nan
-    tree_topology = tree.get_topology_array().astype(int)
-    all_theta = np.array(tree.get_theta_array())
-    for node_idx in range(tree.num_nodes):
-        # If root do:
-        if node_idx == 0:
-            theta = all_theta[node_idx]
-            node_value = sample[node_idx]
-            responsibility = pi_tree*theta[node_value]
-        # If not root do:
-        else:
-            theta = np.stack(all_theta[node_idx])
-            parent_idx = tree_topology[node_idx]
-            parent_value = sample[parent_idx]
-            node_value = sample[node_idx]
-            responsibility *= theta[node_value,parent_value]
-
-    return responsibility
-def q_joint(responsibilities, s_vec, t_vec, a, b):
-
-    numerator = sum([r for (r,s,t) in zip(responsibilities, s_vec, t_vec) if s == a and t == b])
-    denominator = np.sum(responsibilities)
-
-    return numerator/denominator
-
-def q_marginal(responsibilities, s_vec, a):
-    numerator = np.sum(responsibilities[s_vec == a])
-    denominator = np.sum(responsibilities)
-
-    return numerator/denominator
-
-def I(responsibilities, s_vec, t_vec, a, b):
-    factor1 = q_joint(responsibilities, s_vec, t_vec, a, b)
-    factor2 = np.log(q_joint(responsibilities, s_vec, t_vec, a, b) \
-        /q_marginal(responsibilities, s_vec, a)/q_marginal(responsibilities, t_vec, b))
-    if factor1 == 0:
-        return 0
-    else:
-        return factor1*factor2
-
-def mutual_information(responsibilities, samples, s_idx, t_idx):
-    # Going from node s to node t
-    s_vec = samples[:,s_idx]
-    t_vec = samples[:,t_idx]
-    I_matrix = [[I(responsibilities, s_vec, t_vec, a, b) for a in [0,1]] for b in [0,1]]
-
-    return np.sum(I_matrix, axis=None)
-    
-    
-def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
+def em_algorithm(seed_val, samples, num_clusters, max_num_iter=20):
     """
     This function is for the EM algorithm.
     :param seed_val: Seed value for reproducibility. Type: int
@@ -125,56 +78,52 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
 
     # Set the seed
     np.random.seed(seed_val)
-
-    num_samples = samples.shape[0] # Should be 100
+    num_samples = 100#samples.shape[0] # Should be 100
     num_nodes = samples.shape[1] # Should be 5
+    num_clusters = 3
     print("Running EM algorithm...")
 
     loglikelihood = []
     #1. for each n,k compute responsibilities - (a) get pi, (b) get theta
-
-    for iter_ in range(max_num_iter):
-        loglikelihood.append(np.log((1 + iter_) / max_num_iter))
-
-
     tm = TreeMixture(num_clusters=num_clusters, num_nodes=num_nodes)
     tm.simulate_pi(seed_val=seed_val)
     tm.simulate_trees(seed_val=seed_val)
-    tm.sample_mixtures(num_samples=num_samples, seed_val=seed_val)
-    
-    samples = tm.samples.astype(int)
-    # 1. Compute responsibilities for every mixture and every sample
-    sample_likelihoods = np.array([[sample_likelihood(tm.clusters[i], samples[j,:], tm.pi[i]) for i in range(num_clusters)] for j in range(num_samples)])
-    sum_over_trees_likelihoods = np.reshape(np.sum(sample_likelihoods, axis = 1),(100,1))
-    Responsibilities = np.divide(sample_likelihoods,sum_over_trees_likelihoods)
+    tm.sample_mixtures(num_samples=num_samples,seed_val=seed_val)
+    #samples = tm.samples
 
-    # 2. Updating pi
-    tm.pi = np.sum(Responsibilities,axis=0)/num_samples
-    
-    # 3. Updating each tree
-    for i in range(num_clusters):
-        # 3.1 Computing a directed graph
-        tree = tm.clusters[i]
-        responsibilities = Responsibilities[:,i]
-        vertices = [x for x in range(num_nodes)]
-        edges = set()
-        [[edges.add((s_idx,t_idx,mutual_information(responsibilities, samples, s_idx, t_idx))) for s_idx in vertices] for t_idx in vertices]
-        graph = {
-        'vertices': vertices,
-        'edges': edges
-        }
-        # 3.2 Finding the maximum spanning tree
-        MST = maximum_spanning_tree(graph)
+    for iter_ in range(max_num_iter):
+        # 1. Compute responsibilities for all trees
+        sample_likelihoods = np.array([[sample_likelihood(tm.clusters[ii], samples[jj,:]\
+            , tm.pi[ii]) for ii in range(num_clusters)] for jj in range(num_samples)])
+        sum_over_trees_likelihoods = np.reshape(np.sum(sample_likelihoods, axis = 1),(num_samples,1))
+        Responsibilities = np.divide(sample_likelihoods,sum_over_trees_likelihoods)
+        # Computing loglikelihood
+        ll = np.sum(np.log(np.sum(sample_likelihoods,axis=1)),axis=None)
+        loglikelihood.append(ll)
+        # 2. Updating pi for all trees
+        tm.pi = np.sum(Responsibilities,axis=0)/num_samples
+        vertices = list(range(5))
+        # 3. Updating each tree
+        for i in range(num_clusters):
+            tree = tm.clusters[i]
+            responsibilities = Responsibilities[:,i]
+            # Creating the symmetric mutual information matrix
+            mutual_information_matrix = np.asarray([[mutual_information(responsibilities, samples, s_idx, t_idx) \
+                for s_idx in vertices] for t_idx in vertices])
+            # Computing the graph
+            graph = create_graph(num_nodes, responsibilities, samples, mutual_information_matrix, vertices)
+            # Finding the maximum spanning tree
+            MST = maximum_spanning_tree(graph)
+            # Choosing the root as 0
+            root_name = 0
+            # Finding the order of nodes in the tree
+            ordered_nodes, I_sum_tree = create_ordered_nodes(MST, root_name)
+            # Getting attributes for tree to enable update
+            topology_array, theta_array = create_tree_attributes1(ordered_nodes, root_name, samples, responsibilities, num_nodes)
+            # Updating the tree
+            tree.load_tree_from_direct_arrays(topology_array, theta_array)
 
-        # 3.3 Updating the tree
-        pairs = []
-        for pair in MST:
-            pairs.append(pair[0:2])
-        pairs = np.asarray(pairs)
-        root_idx = np.int(np.sum(vertices) - np.sum(pairs[:,1]))
-        
-        print(MST)
-
+    # -------------------------------------------
     topology_list = []
     theta_list = []
     for i in range(num_clusters):
@@ -187,7 +136,7 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     # End: Example Code Segment
 
     ###
-
+    #print('Den äkta pajen', paj)
     return loglikelihood, topology_list, theta_list
 
 
@@ -202,26 +151,26 @@ def main():
     real_values_filename = directory + "data/q2_4/q2_4_tree_mixture.pkl"
     num_clusters = 3
 
-    print("\n1. Load samples from txt file.\n")
+    #print("\n1. Load samples from txt file.\n")
 
     samples = np.loadtxt(sample_filename, delimiter="\t", dtype=np.int32)
     num_samples, num_nodes = samples.shape
-    print("\tnum_samples: ", num_samples, "\tnum_nodes: ", num_nodes)
+    #print("\tnum_samples: ", num_samples, "\tnum_nodes: ", num_nodes)
     #print("\tSamples: \n", samples)
 
-    print("\n2. Run EM Algorithm.\n")
+    #print("\n2. Run EM Algorithm.\n")
 
     loglikelihood, topology_array, theta_array = em_algorithm(seed_val, samples, num_clusters=num_clusters)
 
-    print("\n3. Save, print and plot the results.\n")
+    #print("\n3. Save, print and plot the results.\n")
 
     save_results(loglikelihood, topology_array, theta_array, output_filename)
-
+    """
     for i in range(num_clusters):
         print("\n\tCluster: ", i)
         print("\tTopology: \t", topology_array[i])
         print("\tTheta: \t", theta_array[i])
-
+    """
     plt.figure(figsize=(8, 3))
     plt.subplot(121)
     plt.plot(np.exp(loglikelihood), label='Estimated')
@@ -234,6 +183,7 @@ def main():
     plt.legend(loc=(1.04, 0))
     plt.show()
 
+    """
     if real_values_filename != "":
         print("\n4. Retrieve real results and compare.\n")
         print("\tComparing the results with real values...")
@@ -242,8 +192,11 @@ def main():
         # TODO: Do RF Comparison
 
         print("\t4.2. Make the likelihood comparison.\n")
-        # TODO: Do Likelihood Comparison
+        # TODO: Do Likelihood Comparison"""
 
+    real_tree = TreeMixture(num_clusters = 3, num_nodes = 5)
+    real_tree.load_mixture(real_values_filename)
+    print(real_tree.pi)
 
 if __name__ == "__main__":
     main()

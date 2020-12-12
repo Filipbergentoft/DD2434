@@ -148,6 +148,7 @@ class Tree:
         self.num_nodes = 0
         self.num_leaves = 0
         self.k = 0
+        self.new_topology_array = []
         self.alpha = []
         self.num_samples = 0
         self.samples = []
@@ -499,8 +500,6 @@ class Tree:
             t = Tree()
             t.load_tree_from_direct_arrays(topology_array, theta_array)
         """
-
-        print("Loading tree from topology_array...")
         k = 0
 
         self.root = Node(str(0), [])
@@ -587,7 +586,45 @@ class Tree:
         self.k = k
         self.newick = self.get_tree_newick()
 
+    def load_tree_from_arrays_2(self, topology_array, theta_array):
+        """ This function loads a tree from numpy files. """
+        k = len(theta_array[0])
 
+        self.root = Node(str(0), [])
+        if len(theta_array) > 0:
+            self.root.cat = theta_array[0]
+
+        visit_list = [self.root]
+        print(visit_list)
+
+        num_nodes = 1
+        num_leaves = 1
+        while num_nodes < len(topology_array):
+            cur_node = visit_list[0]
+            visit_list = visit_list[1:]
+
+            children_indices = np.where(topology_array == int(cur_node.name))[0]
+            num_children = len(children_indices)
+
+            if num_children > 0:
+                num_leaves = num_leaves + num_children - 1
+                children_list = []
+                for child_idx in children_indices:
+                    cat = []
+                    if len(theta_array) > 0:
+                        cat = theta_array[child_idx]
+
+                    child_node = Node(str(child_idx), cat)
+                    child_node.ancestor = cur_node
+                    children_list.append(child_node)
+                    visit_list.append(child_node)
+                    num_nodes = num_nodes + 1
+                cur_node.descendants = children_list
+
+        self.num_nodes = num_nodes
+        self.num_leaves = num_leaves
+        self.k = k
+        self.newick = self.get_tree_newick()
 # Code taken from https://www.biostars.org/p/114387/
 # Python program for Newick string generation, given a tree structure, provided by weslfield.
 def tree_to_newick_rec(cur_node):

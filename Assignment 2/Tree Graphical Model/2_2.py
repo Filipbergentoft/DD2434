@@ -47,7 +47,7 @@ def calculate_likelihood(tree_topology, theta, beta):
     K = np.asarray(theta).shape[1]
     number_of_nodes = np.asarray(theta).shape[0]
     node_ids = range(number_of_nodes-1,-1,-1)
-
+    print(tree_topology)
     # Matrix of probabilities, each row coresponds to a node
     S = np.empty((number_of_nodes,K))
     
@@ -88,7 +88,7 @@ def main():
     print("\n1. Load tree data from file and print it\n")
     directory = '/Users/filipbergentoft/Desktop/Github/DD2434/Assignment 2/Tree Graphical Model/'
     #qqq: Need to change this to this years verison!!
-    filename = directory + "data/q2_2/q2_2_large_tree.pkl"  # "data/q2_2/q2_2_medium_tree.pkl", "data/q2_2/q2_2_large_tree.pkl"
+    filename = directory + "data/q2_2/q2_2_small_tree.pkl"  # "data/q2_2/q2_2_medium_tree.pkl", "data/q2_2/q2_2_large_tree.pkl"
     t = Tree()
     t.load_tree(filename)
     #t.print()
