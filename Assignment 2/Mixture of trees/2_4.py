@@ -42,13 +42,11 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import dendropy
 from Tree import TreeMixture
 from Tree import Tree
 from Kruskal_v2 import maximum_spanning_tree
 from help_functions import q_joint, q_marginal, I_element, mutual_information, \
     create_ordered_pairs, create_ordered_nodes, create_tree_attributes, create_graph, sample_likelihood, create_tree_attributes1
-
 
 def save_results(loglikelihood, topology_array, theta_array, filename):
     """ This function saves the log-likelihood vs iteration values,
@@ -63,7 +61,7 @@ def save_results(loglikelihood, topology_array, theta_array, filename):
     np.save(topology_array_filename, topology_array)
     np.save(theta_array_filename, theta_array)
 
-def em_algorithm(seed_val, samples, num_clusters, max_num_iter=80, tm=None):
+def em_algorithm(seed_val, samples, num_clusters, max_num_iter=20):
     """
     This function is for the EM algorithm.
     :param seed_val: Seed value for reproducibility. Type: int
@@ -79,17 +77,19 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=80, tm=None):
     """
 
     # Set the seed
-    #np.random.seed(seed_val)
-    num_samples = samples.shape[0] 
-    num_nodes = samples.shape[1]
+    np.random.seed(seed_val)
+    num_samples = 100#samples.shape[0] # Should be 100
+    num_nodes = samples.shape[1] # Should be 5
     num_clusters = 3
+    print("Running EM algorithm...")
 
     loglikelihood = []
-    if tm is None:
-        tm = TreeMixture(num_clusters=num_clusters, num_nodes=num_nodes)
-        tm.simulate_pi(None)
-        tm.simulate_trees(None)
-        #samples = tm.samples
+    #1. for each n,k compute responsibilities - (a) get pi, (b) get theta
+    tm = TreeMixture(num_clusters=num_clusters, num_nodes=num_nodes)
+    tm.simulate_pi(seed_val=seed_val)
+    tm.simulate_trees(seed_val=seed_val)
+    tm.sample_mixtures(num_samples=num_samples,seed_val=seed_val)
+    #samples = tm.samples
 
     for iter_ in range(max_num_iter):
         # 1. Compute responsibilities for all trees
@@ -100,8 +100,6 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=80, tm=None):
         # Computing loglikelihood
         ll = np.sum(np.log(np.sum(sample_likelihoods,axis=1)),axis=None)
         loglikelihood.append(ll)
-
-        tm.loglikelihood.append(ll)
         # 2. Updating pi for all trees
         tm.pi = np.sum(Responsibilities,axis=0)/num_samples
         vertices = list(range(5))
@@ -113,6 +111,7 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=80, tm=None):
             mutual_information_matrix = np.asarray([[mutual_information(responsibilities, samples, s_idx, t_idx) \
                 for s_idx in vertices] for t_idx in vertices])
             # Computing the graph
+            """Should it be able to choose itself? Or can the algorithm even do that?"""
             graph = create_graph(num_nodes, responsibilities, samples, mutual_information_matrix, vertices)
             # Finding the maximum spanning tree
             MST = maximum_spanning_tree(graph)
@@ -135,94 +134,51 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=80, tm=None):
     loglikelihood = np.array(loglikelihood)
     topology_list = np.array(topology_list)
     theta_list = np.array(theta_list)
+    # End: Example Code Segment
 
-    return loglikelihood, topology_list, theta_list, tm
+    ###
+    #print('Den äkta pajen', paj)
+    return loglikelihood, topology_list, theta_list
 
-def sieving(n_first_mixtures, n_second_mixtures, n_first_iterations,n_second_iterations, n_training_samples, samples):
-
-    mixtures = []
-    mixtures_loglikelihoods_verification = []
-    training_samples = samples[:n_training_samples,:]
-    verification_samples = samples[n_training_samples:,:]
-
-    for i in range(n_first_mixtures):
-        
-        # Training the model for 10 iterations
-        tm = em_algorithm(seed_val=None, samples=training_samples, num_clusters=3, max_num_iter=n_first_iterations, tm=None)[-1]
-        mixtures.append(tm)
-        # Computing the loglikelihood on the verification samples
-        loglikelihood_verification = mixture_likelihood(tm, verification_samples)
-        mixtures_loglikelihoods_verification.append(loglikelihood_verification)
-    
-    mixtures_loglikelihoods_verification = np.asarray(mixtures_loglikelihoods_verification)
-    idx_best_mixtures = np.argsort(mixtures_loglikelihoods_verification)[0:10]
-
-    second_mixtures = []
-    second_mixtures_loglikelihoods = []
-
-    for i in range(n_second_mixtures):
-        print('Optimixing second mixture number: ', i)
-        tm_idx = idx_best_mixtures[i]
-        tm = mixtures[tm_idx]
-        tm = em_algorithm(seed_val=None, samples=training_samples, num_clusters=3, max_num_iter=n_second_iterations, tm=tm)[-1]
-        second_mixtures.append(tm)
-        loglikelihood_verification = mixture_likelihood(tm, verification_samples)
-        second_mixtures_loglikelihoods.append(loglikelihood_verification)
-
-    best_idx = np.argmax(second_mixtures_loglikelihoods)
-    best_tm = second_mixtures[best_idx]
-    print(second_mixtures_loglikelihoods)
-
-    topology_list = []
-    theta_list = []
-    for i in range(3):
-        topology_list.append(best_tm.clusters[i].get_topology_array())
-        theta_list.append(best_tm.clusters[i].get_theta_array())
-
-    #loglikelihood = np.array(loglikelihood)
-    topology_list = np.array(topology_list)
-    theta_list = np.array(theta_list)
-
-    return best_tm
-
-
-
-def mixture_likelihood(mixture, samples):
-    num_clusters = mixture.pi.shape[0]
-    num_samples = samples.shape[0]
-    sample_likelihoods = np.array([[sample_likelihood(mixture.clusters[ii], samples[jj,:]\
-        , mixture.pi[ii]) for ii in range(num_clusters)] for jj in range(num_samples)])
-
-    # Computing loglikelihood
-    ll = np.sum(np.log(np.sum(sample_likelihoods,axis=1)),axis=None)
-
-    return ll
 
 def main():
+    print("Hello World!")
+    print("This file demonstrates the flow of function templates of question 2.4.")
 
-    seed_val = None
-    directory = '/Users/filipbergentoft/Desktop/Github/DD2434/Assignment 2/2_4/'
+    seed_val = 123
+    directory = '/Users/filipbergentoft/Desktop/Github/DD2434/Assignment 2/Mixture of trees/'
     sample_filename = directory + "data/q2_4/q2_4_tree_mixture.pkl_samples.txt"
-    output_filename = directory + "data/q2_4/q2_4_own_results"
+    output_filename = "q2_4_results.txt"
     real_values_filename = directory + "data/q2_4/q2_4_tree_mixture.pkl"
     num_clusters = 3
 
     #print("\n1. Load samples from txt file.\n")
 
     samples = np.loadtxt(sample_filename, delimiter="\t", dtype=np.int32)
-    np.random.shuffle(samples)
+    num_samples, num_nodes = samples.shape
+    #print("\tnum_samples: ", num_samples, "\tnum_nodes: ", num_nodes)
+    #print("\tSamples: \n", samples)
 
-    best_tm = sieving(n_first_mixtures=100, n_second_mixtures=5, n_first_iterations=10, n_second_iterations=50, n_training_samples=80, samples=samples)
+    #print("\n2. Run EM Algorithm.\n")
 
-    #save_results(best_tm.loglikelihood, best_tm.get_topology_array(), best_tm.get_theta_array(), output_filename)
+    loglikelihood, topology_array, theta_array = em_algorithm(seed_val, samples, num_clusters=num_clusters)
 
+    #print("\n3. Save, print and plot the results.\n")
+
+    save_results(loglikelihood, topology_array, theta_array, output_filename)
+    """
+    for i in range(num_clusters):
+        print("\n\tCluster: ", i)
+        print("\tTopology: \t", topology_array[i])
+        print("\tTheta: \t", theta_array[i])
+    """
     plt.figure(figsize=(8, 3))
     plt.subplot(121)
-    plt.plot(np.exp(best_tm.loglikelihood), label='Estimated')
+    plt.plot(np.exp(loglikelihood), label='Estimated')
     plt.ylabel("Likelihood of Mixture")
     plt.xlabel("Iterations")
     plt.subplot(122)
-    plt.plot(best_tm.loglikelihood, label='Estimated')
+    plt.plot(loglikelihood, label='Estimated')
     plt.ylabel("Log-Likelihood of Mixture")
     plt.xlabel("Iterations")
     plt.legend(loc=(1.04, 0))
@@ -230,18 +186,18 @@ def main():
 
     """
     if real_values_filename != "":
+        print("\n4. Retrieve real results and compare.\n")
+        print("\tComparing the results with real values...")
+
         print("\t4.1. Make the Robinson-Foulds distance analysis.\n")
         # TODO: Do RF Comparison
 
         print("\t4.2. Make the likelihood comparison.\n")
         # TODO: Do Likelihood Comparison"""
 
-    real_mixture = TreeMixture(num_clusters = 3, num_nodes = 5)
-    real_mixture.load_mixture(real_values_filename)
-    print(mixture_likelihood(real_mixture, samples[80:,:]))
-    print(mixture_likelihood(best_tm, samples[80:,:]))
-    print(best_tm.pi)
-    print(real_mixture.pi)
+    real_tree = TreeMixture(num_clusters = 3, num_nodes = 5)
+    real_tree.load_mixture(real_values_filename)
+    print(real_tree.pi)
 
 if __name__ == "__main__":
     main()

@@ -12,13 +12,13 @@ class TreeMixture:
         self.num_nodes = num_nodes
         self.pi = []
         self.clusters = []
+        self.loglikelihood = []
 
         self.samples = []
         self.sample_assignments = []
         self.num_samples = 0
 
     def simulate_pi(self, seed_val=None):
-        print("Simulating pi for tree mixture... ")
 
         if seed_val is not None:
             np.random.seed(seed_val)
@@ -27,7 +27,6 @@ class TreeMixture:
         self.pi = pi / np.sum(pi)
 
     def simulate_trees(self, seed_val):
-        print("Simulating trees for tree mixture... ")
 
         if seed_val is not None:
             np.random.seed(seed_val)
@@ -35,7 +34,7 @@ class TreeMixture:
         tree_list = []
         for i in range(self.num_clusters):
             t = Tree()
-            t.create_random_tree_fix_nodes(seed_val + i, k=2, num_nodes=self.num_nodes)
+            t.create_random_tree_fix_nodes(None, k=2, num_nodes=self.num_nodes)
             tree_list.append(t)
         self.clusters = tree_list
 
@@ -162,7 +161,6 @@ class Tree:
             alpha = []
 
         print("Creating random tree...")
-        np.random.seed(seed_val)
 
         if len(alpha) == 0:
             alpha = [1.0] * k
@@ -210,7 +208,6 @@ class Tree:
         if alpha is None:
             alpha = []
 
-        print("Creating random tree with fixed number of nodes...")
         np.random.seed(seed_val)
 
         if len(alpha) == 0:

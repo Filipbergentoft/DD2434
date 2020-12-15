@@ -61,22 +61,22 @@ def main():
 
     # If you want to compare two trees, make sure you specify the same Taxon Namespace!
     tns = dendropy.TaxonNamespace()
-
-    filename = "data/q2_4_tree_mixture.pkl_tree_0_newick.txt"
+    directory = '/Users/filipbergentoft/Desktop/Github/DD2434/Assignment 2/2_4/'
+    filename = directory + "data/q2_4/q2_4_tree_mixture.pkl_tree_0_newick.txt"
     with open(filename, 'r') as input_file:
         newick_str = input_file.read()
     t0 = dendropy.Tree.get(data=newick_str, schema="newick", taxon_namespace=tns)
     print("\tTree 0: ", t0.as_string("newick"))
     t0.print_plot()
 
-    filename = "data/q2_4_tree_mixture.pkl_tree_1_newick.txt"
+    filename = directory + "data/q2_4/q2_4_tree_mixture.pkl_tree_1_newick.txt"
     with open(filename, 'r') as input_file:
         newick_str = input_file.read()
     t1 = dendropy.Tree.get(data=newick_str, schema="newick", taxon_namespace=tns)
     print("\tTree 1: ", t1.as_string("newick"))
     t1.print_plot()
 
-    filename = "data/q2_4_tree_mixture.pkl_tree_2_newick.txt"
+    filename = directory + "data/q2_4/q2_4_tree_mixture.pkl_tree_2_newick.txt"
     with open(filename, 'r') as input_file:
         newick_str = input_file.read()
     t2 = dendropy.Tree.get(data=newick_str, schema="newick", taxon_namespace=tns)
@@ -90,7 +90,7 @@ def main():
     print("\tRF distance: \t", dendropy.calculate.treecompare.symmetric_difference(t1, t2))
 
     print("\n4. Load Inferred Trees")
-    filename = "data/q2_4_result_em_topology.npy"  # This is the result you have.
+    filename = directory + "data/q2_4/q2_4_own_results_em_topology.npy"  # This is the result you have.
     topology_list = np.load(filename)
     print(topology_list.shape)
     print(topology_list)
