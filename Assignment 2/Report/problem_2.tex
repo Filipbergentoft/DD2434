@@ -1,7 +1,10 @@
 \section*{2.2 Likelihood of a Tree Graphical Model}
 
-\subsection*{Question 2.2.1:}
-\textit{Implement a dynamic programming algorithm that, for a given $T, \Theta \text{ and } \beta$ computes $p(\beta | T, \Theta)$.}
+
+\begin{tcolorbox}
+\textbf{Question 2.2.7:}
+Implement a dynamic programming algorithm that, for a given $T, \Theta \text{ and } \beta$ computes $p(\beta | T, \Theta)$
+\end{tcolorbox}
 
 $T$ is a binary tree with a vertex set $V(T)$ and a leaf set $L(T)$. For each vertex $v \in V(T)$ there is an associated random variable $X_v \in [K]$ with a corresponding CPD $\theta_v = p(X_v|x_{pa(v)})$ which is a categorical distribution. $\beta$ is defined as the set of values of all leafs in $T$ such that $\beta = \{x_l \, : \, l \in L(T)$.
 
@@ -45,11 +48,12 @@ A special case is when the node $u$ is a leaf node, then the following holds
 
 
 Equation (\ref{sol_eq}) can then be computed using dynamic programming by starting at the leaf nodes using equation (\ref{eq_3}) and then traversing up the nodes in the tree to the root using equation (\ref{traverse_eq}) one level at a time and storing the achieved probabilities $s$ along the way.
-
-
-\subsection*{Question 2.2.2:}
-\textit{Apply your algorithm to the graphical model and data provided separately.}
 \\
+
+\begin{tcolorbox}
+\textbf{Question 2.2.8:}
+Apply your algorithm to the graphical model and data provided separately
+\end{tcolorbox}
 
 The following likelihoods were achieved when applying my implementation of the dynamic programming algorithm on the given trees.
 

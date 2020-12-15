@@ -42,6 +42,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 import dendropy
 from Tree import TreeMixture
 from Tree import Tree
@@ -198,6 +199,25 @@ def mixture_likelihood(mixture, samples):
 
     return ll
 
+def RF_comparison(inferred_tm, real_tm):
+    tns = dendropy.TaxonNamespace()
+
+    dendr_inferred_trees = []
+    dendr_real_trees = []
+    for inferred_tree in inferred_tm.clusters:
+        inferred_tree = dendropy.Tree.get(data=inferred_tree.newick, schema="newick", taxon_namespace=tns)
+        dendr_inferred_trees.append(inferred_tree)
+
+    for real_tree in real_tm.clusters:
+        real_tree = dendropy.Tree.get(data=real_tree.newick, schema="newick", taxon_namespace=tns)
+        dendr_real_trees.append(real_tree)
+
+    #x-dir: inferred trees, y-dir: real trees
+    RF_matrix = [[dendropy.calculate.treecompare.symmetric_difference(inferred_tree, real_tree)\
+         for inferred_tree in dendr_inferred_trees] for real_tree in dendr_real_trees]
+        
+    return np.asarray(RF_matrix)
+
 def main():
 
     seed_val = None
@@ -212,10 +232,19 @@ def main():
     samples = np.loadtxt(sample_filename, delimiter="\t", dtype=np.int32)
     np.random.shuffle(samples)
 
-    best_tm = sieving(n_first_mixtures=100, n_second_mixtures=5, n_first_iterations=10, n_second_iterations=50, n_training_samples=80, samples=samples)
+    best_tm = sieving(n_first_mixtures=100, n_second_mixtures=5, n_first_iterations=10, n_second_iterations=90, n_training_samples=70, samples=samples[:80,:])
 
-    #save_results(best_tm.loglikelihood, best_tm.get_topology_array(), best_tm.get_theta_array(), output_filename)
 
+
+    real_tm = TreeMixture(num_clusters = 3, num_nodes = 5)
+    real_tm.load_mixture(real_values_filename)
+    print(mixture_likelihood(real_tm, samples[80:,:]))
+    print(mixture_likelihood(best_tm, samples[80:,:]))
+    print(best_tm.pi)
+    print(real_tm.pi)
+    print(RF_comparison(best_tm, real_tm))
+
+    sns.set_style('darkgrid')
     plt.figure(figsize=(8, 3))
     plt.subplot(121)
     plt.plot(np.exp(best_tm.loglikelihood), label='Estimated')
@@ -227,21 +256,6 @@ def main():
     plt.xlabel("Iterations")
     plt.legend(loc=(1.04, 0))
     plt.show()
-
-    """
-    if real_values_filename != "":
-        print("\t4.1. Make the Robinson-Foulds distance analysis.\n")
-        # TODO: Do RF Comparison
-
-        print("\t4.2. Make the likelihood comparison.\n")
-        # TODO: Do Likelihood Comparison"""
-
-    real_mixture = TreeMixture(num_clusters = 3, num_nodes = 5)
-    real_mixture.load_mixture(real_values_filename)
-    print(mixture_likelihood(real_mixture, samples[80:,:]))
-    print(mixture_likelihood(best_tm, samples[80:,:]))
-    print(best_tm.pi)
-    print(real_mixture.pi)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,37 @@
+\section*{2.4 Mixture of trees with observable variables}
+
+\begin{tcolorbox}
+\textbf{Question 2.4.12:}
+Implement this EM algorithm.
+\end{tcolorbox}
+The EM algorithm with sieving was was implemented in the following manner using the given Tree package.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwInput{Data samples}
+\KwOutput{Tree mixture}
+
+  Compute a distance matrix of the data: $D \gets \text{weighted\_distance} (Y) $
+
+  Compute a similarity matrix from $D$: $S \gets \text{similarity\_matrix} (D) $
+
+  Compute Eigen-decomposition of $S$: $[D,Q] \gets \text{Eig}(S)$
+
+  Order $D$ in descending order of eigenvalues magnitude and $Q$ correspondingly
+
+  Ensure elements of $D$ and $Q$ are real
+
+  Compute embedding: $X \gets I_{2\times 101}D Q^T$
+
+  \caption{EM algorithm}
+\end{algorithm}
+
+\begin{tcolorbox}
+\textbf{Question 2.4.13:}
+Apply your algorithm to the provided data and show how well you reconstruct the mixtures. First, compare the real and inferred trees with the unweighted Robinson-Foulds (aka symmetric difference) metric. Do the trees have similar structure? Then, compare the likelihoods of real and inferred mixtures.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Question 2.4.14:}
+Simulate new tree mixtures with different number of nodes, samples and clusters. Try to find some interesting cases. Analyse your results as in the previous question.
+\end{tcolorbox}
