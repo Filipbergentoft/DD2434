@@ -49,7 +49,7 @@ class TreeMixture:
 
         for i in range(self.num_clusters):
             num_assignments = len(np.where(sample_assignments == i)[0])
-            self.clusters[i].sample_tree(num_samples=num_assignments, seed_val=seed_val + i)
+            self.clusters[i].sample_tree(num_samples=num_assignments)
             for sample in self.clusters[i].samples:
                 self.samples.append(sample)
                 self.sample_assignments.append(i)
@@ -303,12 +303,10 @@ class Tree:
         self.alpha = alpha
         self.newick = self.get_tree_newick()
 
-    def sample_tree(self, num_samples=1, seed_val=None):
+    def sample_tree(self, num_samples=1):
         """ This function generates samples from the tree. """
 
         print("Sampling tree nodes...")
-        if seed_val is not None:
-            np.random.seed(seed_val)
 
         samples = np.zeros((num_samples, self.num_nodes))
         samples[:] = np.nan

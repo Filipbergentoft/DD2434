@@ -18,9 +18,13 @@ where $\mu_0, \lambda_0, a_0, b_0$ are hyperparameters. The factorised variation
 \begin{align*}
   q(\mu, \tau) = q{_\mu}(\mu)q_{\tau}(\tau)
 \end{align*}
-qqq: add what kind of distributions they become
 
-which gives the following update formulas
+The factorised distributions are computed in Bishop and become
+\begin{align*}
+  q{_\mu}(\mu) & = \mathcal{N}(\mu;\mu_N, \lambda_N^{-1}) \\
+  q_{\tau}(\tau) & = \Gamma(\tau; a_N, b_N)
+\end{align*}
+whom are accompanied by the following updating formulas for the parameters. 
 \begin{align}
   \mu_N & = \frac{\lambda_0 \mu_0 + N \overline{x}}{\lambda_0 + N}\\
   \lambda_N & = (\lambda_0 + N)\mathbb{E}_{\tau}[\tau] = (\lambda_0 + N) \frac{a_N}{b_N}\\
@@ -94,4 +98,4 @@ In Figure \ref{VI_2} the number of data points has increased to $100$ and the di
   \label{VI_4}
 \end{figure}
 
-In Figures \ref{VI_3} and \ref{VI_4} the effect of the hyperparameter $\mu_0$ is enlightened. In both examples $1000$ data points are drawn from $\mathcal{N}(100,\frac{1}{100})$. In Figure \ref{VI_3} when $\mu_0 = 0$ both posteriors are centred around $\tau = 9$, very far from the real value of $\tau = 100$ whilst in Figure \ref{VI_4} both posteriors are centred around $\tau = 98$, very close to the real value. This shows how important the hyperparameters can be if one does not have a sufficient amount of data. In addition to this conclusion one can also conclude that the inferred posterior is very similar to the real posterior in this example. 
+In Figures \ref{VI_3} and \ref{VI_4} the effect of the hyperparameter $\mu_0$ is enlightened. In both examples $1000$ data points are drawn from $\mathcal{N}(100,\frac{1}{100})$. In Figure \ref{VI_3} when $\mu_0 = 0$ both posteriors are centred around $\tau = 9$, very far from the real value of $\tau = 100$ whilst in Figure \ref{VI_4} both posteriors are centred around $\tau = 98$, very close to the real value. This shows how important the hyperparameters can be if one does not have a sufficient amount of data. In addition to this conclusion one can also conclude that the inferred posterior is very similar to the real posterior in this example.

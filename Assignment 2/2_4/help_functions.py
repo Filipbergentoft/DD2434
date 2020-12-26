@@ -2,7 +2,7 @@ import numpy as np
 
 def q_joint(responsibilities, s_vec, t_vec, a, b):
     numerator = sum([r for (r,s,t) in zip(responsibilities, s_vec, t_vec) if s == a and t == b])
-    denominator = np.sum(responsibilities)
+    denominator = np.sum(responsibilities) + 2e-16
 
     return numerator/denominator
 
@@ -103,7 +103,8 @@ def create_tree_attributes(ordered_nodes, root_name, samples, responsibilities, 
         t = ordered_nodes[j,1].astype(int)
         t_vec = samples[:,t]
 
-        theta = np.asarray([[q_joint(responsibilities, s_vec, t_vec, a, b)/q_marginal(responsibilities, s_vec, a) for b in [0,1]] for a in [0,1]])
+        theta = np.asarray([[q_joint(responsibilities, s_vec, t_vec, a,
+         b)/q_marginal(responsibilities, s_vec, a) for b in [0,1]] for a in [0,1]])
         all_theta.append(theta)
 
         parent_idx = np.where(ordered_nodes[:,1]==s)[0][0]
@@ -138,14 +139,15 @@ def sample_likelihood(tree, sample, pi_tree):
 def create_tree_attributes1(ordered_nodes, root_name, samples, responsibilities, num_nodes):
     
     # Initializing the new topology array and setting root parent to nan
-    topology_array = np.zeros(5)
+    topology_array = np.zeros(num_nodes)
     topology_array[0] = float('nan')
 
 
     # Initializing the new theta array and setting root theta 
-    theta_array = list(range(5))
+    theta_array = list(range(num_nodes))
     root_samples = samples[:,root_name]
-    theta_root = np.asarray([q_marginal(responsibilities, root_samples, 0), q_marginal(responsibilities, root_samples, 1)])
+    theta_root = np.asarray([q_marginal(responsibilities, root_samples, 0),
+     q_marginal(responsibilities, root_samples, 1)])
     theta_array[0]= theta_root
 
     # Iterating to set the remaining topology_array and theta_array
