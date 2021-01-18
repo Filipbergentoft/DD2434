@@ -1,0 +1,69 @@
+\section*{3.6 Spectral Graph Analysis}
+\begin{tcolorbox}
+  \textbf{Problem formulation:} In this problem, you should solve each of the following three subproblems.
+
+  \begin{itemize}
+    \item Let $G=(V, E)$ be an undirected $d$-regular graph, let $A$ be the adjacency matrix of $G,$ and let $L=I-\frac{1}{d} A$ be the normalized Laplacian of $G .$ Prove that for any vector $\mathbf{x} \in \mathbb{R}^{|V|}$ it is
+    \begin{equation}
+      \mathbf{x}^{T} L \mathbf{x}=\frac{1}{d} \sum_{(u, v) \in E}\left(x_{u}-x_{v}\right)^{2}
+      \label{spectral_expression}
+    \end{equation}
+    \item Show that the normalised Laplacian is a positive semidefinite matrix.
+    \item Assume that we find a non-trivial vector $\mathbf{x}_{*}$ that minimises the expression $\mathbf{x}^{T} L \mathbf{x} .$ First explain what non-trivial means. Second explain how $\mathbf{x}_{*}$ can be used as an embedding of the vertices of the graph into the real line. Use Equation \eqref{spectral_expression} to justify the claim that $\mathbf{x}_{*}$ provides a meaningful embedding.
+  \end{itemize}
+\end{tcolorbox}
+
+We begin by stating some useful properties that will be used throughout the problem. Given that $G=(V, E)$ is an undirected $d$-regular graph and that $A$ is an adjacency matrix it follows that
+
+\begin{itemize}
+  \item $A$ is symmetric
+  \item $(A)_{uv} = a_{uv} = \begin{cases} 1, & (u,v) \in E \\ 0, & \text{otherwise}\end{cases}$
+  \item Each row/column of $A$ sums up to $d$, I.E. $d = \sum_i{a_{ij}} = \sum_j{a_{ij}}$
+  \item The main diagonal of $A$ is filled with zeros
+
+\end{itemize}
+
+\subsection*{First subproblem}
+
+We can now begin the proof of the first subproblem.
+\begin{align*}
+  x^T L x & = x^T(I-\frac{A}{d})x = \frac{1}{d} x^T (dI - A) x = \frac{1}{d} (\sum_i d x_i^2 - \sum_{i,j}x_i a_{ij} x_j)
+\end{align*}
+Can now substitute for $d = \sum_j{a_{ij}}$ which yields that
+\begin{align*}
+  x^T L x & = \frac{1}{d} (\sum_{i,j} a_{ij} x_i^2 - \sum_{i,j}x_i a_{ij} x_j) \\
+  & = \frac{1}{2d} (\sum_{i,j} a_{ij} x_i^2 + \sum_{i,j} a_{ij} x_j^2 - 2\sum_{i,j}x_i a_{ij} x_j) \\
+  & = \frac{1}{2d} \sum_{i,j} a_{ij}(x_i-x_j)^2
+\end{align*}
+Using that $A$ is symmetric, I.E. that $a_{ij} = a_{ji}$ and that $a_{ii} = 0, \; \forall i$ we get that
+\begin{align}
+  x^T L x & = \frac{1}{2d} \sum_{i,j} a_{ij}(x_i-x_j)^2 \nonumber \\
+  & = \frac{2}{2d} \sum_{i>j} a_{ij}(x_i-x_j)^2 \label{graph1} \\
+  & = \frac{1}{d} \sum_{(i,j) \in E} (x_i-x_j)^2 \label{graph2}
+\end{align}
+where we between Equation \eqref{graph1} and Equation \eqref{graph2} used that $a_{uv} = \begin{cases} 1, & (u,v) \in E \\ 0, & \text{otherwise}\end{cases}$. Which was to proven.
+
+\subsection*{Second subproblem}
+We can now use the result of the first subproblem to show the second subproblem where we want to show that $L$ is a positive semi-definite matrix. I.E. that
+\begin{equation}
+  x^T L x \geq 0 \; \forall x \in \mathbb{R}^{|V|}
+\end{equation}
+In the first subproblem we showed that
+\begin{equation}
+  x^T L x = \frac{1}{d} \sum_{(i,j) \in E} a_{ij}(x_i-x_j)^2
+  \label{second_sub}
+\end{equation}
+where $d$ is a positive integer and $x \in \mathbb{R}^{|V|}$. It is thus sufficient to show that equation \eqref{second_sub} is non-negative. Using that $f(t) = t^2$ is a non-negative function for all $t \in \mathbb{R}$. $x^T L x$ is thus a sum of non-negative values multiplied with a positive value $\frac{1}{d}$ which gives that
+\begin{equation}
+  x^T L x = \frac{1}{d} \sum_{(i,j) \in E} a_{ij}(x_i-x_j)^2 \geq 0
+\end{equation}
+Which in turn proves that $L$ is positive semi-definite.
+
+\subsection*{qqq: Third subproblem}
+In this problem a \textit{trivial} vector would be a constant vector I.E. that all elements in the vector are equal. This is since a constant vector will always minimise the expression $x^T L x$. Thus is, in this setting, a \textit{non-trivial} vector $x_*$ a non-constant vector. \\
+
+We are given that $x_*$ is a non-trivial vector that minimises equation \eqref{spectral_expression}, $x_*$ is thus not a constant vector. So given that a non-constant $x_*$ vector is the solution to
+\begin{equation}
+  x_* = \underset{x}{\text{argmin }} \frac{1}{d} \sum_{(u, v) \in E}\left(x_{u}-x_{v}\right)^{2}
+\end{equation}
+where the sum is taken over the vertices $(u, v) \in E$, I.E. the vertices that have an edge between them. This means that to minimise the sum one would want $x_u$ and $x_v$ to have a similar value if $(u, v) \in E$. Given that a cluster of points is a set of points that have a lot of edges within that set, this will result in that points belonging to the same cluster will have similar values for their corresponding elements in $x_*$. Conversely; for two different clusters we want the number of edges between the two clusters to be few. This means that 

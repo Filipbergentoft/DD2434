@@ -1,0 +1,56 @@
+\section*{Problem 1}
+Let $\theta = (\theta^r, \theta^e, \theta^a, \psi)$ and $X_{nlm} = 1$ if reader $n$ has clicked on advertisement $m$ in edition $l$, $X_{nlm} = 0$, otherwise.
+
+
+The ECLL is given by
+
+\begin{align*}
+  ECLL = \sum_{nlm} \mathbb{E}_p(Z|)
+\end{align*}
+
+
+
+
+
+
+
+
+
+
+Given that we can observe both $Z$ and $X$ we get the following likelihood
+
+\begin{align*}
+  L(\theta; D) & = \prod_{n,l,m}p(X_{nlm}, Z_n^r, Z_l^r, Z_m^a | \psi) \\
+  & = \prod_{nlm} \prod_{cdf} (\theta_c^r)^{ I(Z_n^r = c)} (\theta_d^e)^{ I(Z_l^e = d)}
+  (\theta_f^a)^{ I(Z_m^a = f)} p(X_{nlm} |\psi_{cdf})^{I((Z_n^r, Z_l^r, Z_m^a) = (c,d,f)}
+\end{align*}
+
+Can now look at the log-likelihood
+
+\begin{align*}
+    l(\theta; D) & = \sum_{nlm}\sum_{cdf} I(Z_n^r = c) ln(\theta_c^r) + I(Z_l^e = d) ln(\theta_d^e)
+    + I(Z_m^a = f) ln(\theta_f^a) \\
+    & + I((Z_n^r, Z_l^r, Z_m^a) = (c,d,f)) ln(p(X_{nlm} |\psi_{cdf}))
+\end{align*}
+
+Now let
+
+\begin{align*}
+  & A = \sum_{cdf}\sum_{nlm} I(Z_n^r = c) ln(\theta_c^r) + I(Z_l^e = d) ln(\theta_d^e)
+  + I(Z_m^a = f) ln(\theta_f^a) \\
+  & B = \sum_{nlm}\sum_{cdf} I((Z_n^r, Z_l^r, Z_m^a) = (c,d,f)) ln(p(X_{nlm} |\psi_{cdf}))
+\end{align*}
+
+Can then rewrite $A$ in the following manner
+
+\begin{align*}
+  A = \sum_{cdf} LM N_c^r ln(\theta_c^r) + NM N_d^e ln(\theta_d^e) + NL ln(\theta_f^a)
+\end{align*}
+
+Where each term can be maximised independently using known techniques from lectures yielding
+
+\begin{align*}
+  & \theta_c^r = \frac{N^r_c}{N} \\
+  & \theta_d^e = \frac{N^e_d}{L} \\
+  & \theta_c^r = \frac{N^a_f}{M}
+\end{align*}

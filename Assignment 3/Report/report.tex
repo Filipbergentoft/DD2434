@@ -1,0 +1,91 @@
+\documentclass[11pt,oneside,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\date{}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\SetKwInput{KwInput}{Input}                % Set the Input
+\SetKwInput{KwOutput}{Output}              % set the Output<z
+\usepackage{blindtext}
+\usepackage{changepage}
+
+
+\usepackage[formats]{listings}  %% Code listing%% Code format
+
+%\usemintedstyle{friendly}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{tcolorbox}
+\usepackage{sectsty}
+\usepackage{stmaryrd}
+\usepackage{gensymb}
+\usepackage{wasysym}
+\usepackage{amsfonts}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,snakes}
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[margin=1.2in]{geometry}
+%__________WIDE HAT_________
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}%
+}{0.5ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+%______________________________
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue
+}
+\setlength{\parindent}{0in}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage[british,UKenglish,swedish,USenglish,english,american]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{natbib}
+%\pagestyle{fancy}
+\begin{document}
+\renewcommand{\bibname}{References}
+\hypersetup{citecolor=black}
+\begin{titlepage}\centering
+\vspace*{\fill}
+\Huge Assignment 3\\
+\vspace*{10mm}
+\large Includes methods of Directed Graphical Models, Expectation Maximisation, Dynamic programming, Variational Inference, Hidden Markov Models and Spectral Graph Analysis\\
+\vspace*{\fill}
+\large \textsc{DD2434 Advanced Machine Learning} \\
+\textsc{Filip Bergentoft, bergento@kth.se} \\
+\end{titlepage}
+
+\newpage
+\section*{3.1 Easier EM for Advertisements}
+Submitted a solution to the original version of 3.1 before it was simplified and received full points plus $\frac{1}{4}$ bonus points for my solution.
+
+\section*{3.2 Hard EM for Advertisements}
+Problem removed from assignment.
+qqq: Add how I have chosen to do at the root/leaves when it comes to the Normal Dist
+\input{problem_3}
+\newpage
+\input{problem_4}
+\newpage
+\input{problem_6}
+
+\end{document}

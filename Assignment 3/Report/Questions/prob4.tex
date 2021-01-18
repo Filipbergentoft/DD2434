@@ -1,0 +1,93 @@
+\documentclass[11pt,oneside,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\date{}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\SetKwInput{KwInput}{Input}                % Set the Input
+\SetKwInput{KwOutput}{Output}              % set the Output<z
+\usepackage{blindtext}
+\usepackage{changepage}
+
+
+\usepackage[formats]{listings}  %% Code listing%% Code format
+
+%\usemintedstyle{friendly}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{tcolorbox}
+\usepackage{sectsty}
+\usepackage{stmaryrd}
+\usepackage{gensymb}
+\usepackage{wasysym}
+\usepackage{amsfonts}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[margin=1.2in]{geometry}
+%__________WIDE HAT_________
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}%
+}{0.5ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+%______________________________
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue
+}
+\setlength{\parindent}{0in}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage[british,UKenglish,swedish,USenglish,english,american]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{natbib}
+%\pagestyle{fancy}
+\begin{document}
+\renewcommand{\bibname}{References}
+\hypersetup{citecolor=black}
+\begin{titlepage}\centering
+\vspace*{\fill}
+\Huge Assignment 2\\
+\vspace*{10mm}
+\large Includes methods of Directed Graphical Models, Dynamic programming, Variational Inference and Expectation Maximisation \\
+\vspace*{\fill}
+\large \textsc{DD2434 Advanced Machine Learning} \\
+\textsc{Filip Bergentoft, bergento@kth.se} \\
+\end{titlepage}
+
+\newpage
+
+Jag har gjort följande faktorisering
+
+\begin{align*}
+  p(A,Z,\Omega|G) = p(A,Z|\Omega, G)p(\Omega)
+\end{align*}
+Eftersom vår variational distribution enbart beror på $Z$ räcker det med att utveckla första termen i RHS. Låt $n^k_i(G_d)$ beskriva antalet infekterade arbetare $k$ träffade under dag $d$ och $\gamma$ beskriva hur många dagar en arbetare varit sjuk. Då får vi att
+
+\begin{align*}
+  p(A,Z|\Omega, G) & = \prod_{d,k}p(A_d^k|Z_d^k, \sigma) \prod_{d,k} p(Z_{d+1}^k|Z_d, G_d, \iota, \alpha) \\
+  & = \prod_{d,k} \prod_{s,t,g,\gamma} p(Z_{d+1}^k = t | Z_d^k = (s,\gamma), n^k_i(G_d) = g, \iota, \alpha)^{I\big\{Z_{d+1}^k = t, Z_d^k = (s,\gamma), n^k_i(G_d) = g \big\}} \\
+  & \prod_{d,k} \prod_{s,l} p(A_d^k = l| Z_d^k = s, \sigma)^{I\big\{A_d^l = l, Z_d^k = s \big\}}
+\end{align*}
+
+Verkar detta som en rimlig uppställning? Jag är en aning osäker på användandet av $n^k_i(G_d)$ men ser inte hur man kan göra på ett annat sätt givet de svar Jens gav Niko Palić i det öppna forumet. Skulle du ha möjlighet att indikera om detta är en god väg att gå eller om jag borde gå i en annan riktning?
+
+\end{document}

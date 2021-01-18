@@ -1,0 +1,96 @@
+\section*{3.4 Easier VI for Covid-19}
+\begin{tcolorbox}
+\textbf{Problem formulation:} We have a workplace with $K$ workers, $w_{1}, \cdots, w_{K},$ where we monitor Covid-19. Any day $d$ each worker $w_{k}$ is either non-infected, infected, or has antibodies, i.e., there is a latent variable $Z_{d}^{k}$ with a value in $\{n, i, a\},$ with the obvious interpretation. A non-infected individual becomes with probability $\iota$ infected the day after the individual has had contact with an infected individual (and though only one such contact may occur with any single infected individual during a day, an uninfected may have contact with several infected during a day). An individual that becomes infected on day $d$ is aware of the infection, and will on day $d+9$ get antibodies with probability $\alpha .$ Otherwise, the individual remains/returns to the non-infected state. An infected individual stays at home with probability $\sigma$ and is otherwise present at the workplace. We have access to a contact graph $G_{d}$ and an absence table $A_{d}$ for each day $d \in[D], A_{d}^{k}=1$ if worker $k$ is home on day $d$ and otherwise $0 .$ Consider $G=G_{d}$ as given so the joint is
+$$
+p(A, Z, \Omega \mid G)
+$$
+where $\Omega=(\iota, \alpha, \sigma) .$ There are beta priors on Bernoulli parameters $\iota, \alpha,$ and $\sigma .$ No other reasons than Covid-19 makes any worker stay at home. On day one $w_{1}$ is infected and all other workers are non-infected. Let $Z^{k}=Z_{1}^{k}, . . Z_{D}^{k}$ and $Z=Z^{1}, \ldots Z^{K} .$ Design a VI algorithm for approximating the posterior probability over $Z$ and use the VI distribution
+$$
+q(Z)=\prod_{d, k} q\left(Z_{d}^{k}\right)
+$$
+\end{tcolorbox}
+
+We start off by simplifying the joint distribution keeping in mind that we are only interested in a variational approximation of the distribution for $Z$, yielding the complete likelihood.
+\begin{align}
+p(A,Z, \Omega | G) & = p(A,Z|\Omega, G)p(\Omega) \propto p(A,Z|\Omega, G) \nonumber
+\end{align}
+The complete likelihood can then be expanded to a product of emission and transmission probabilities.
+\begin{align}
+  p(A,Z|\Omega, G) = \prod_{d,k} p(A_d^k|Z_d^k, \sigma) p(Z_{d+1}^k|Z_d, G_d, \iota, \alpha)
+  \label{complete_likelihood}
+\end{align}
+In order to enable us to keep track of when a worker should go from the state of infected to either the state of non-infected or the state of antibodies we expand the latent state to include the number of days a worker has been infected.
+\begin{align}
+  Z_d^k = \{s, \gamma\}, \; s \in \{n,i,a\}, \; \gamma \in \{0,1,...,8\}
+\end{align}
+We will in addition introduce a counter $n_d^k = g, \; g \in [K]$ that given $Z_d^{-k}$ and $G_d$ tells how many infected workers worker $k$ has met during day $d$. This is useful when computing the transition probabilities. \\
+
+We will later make use of a transition matrix that tells the different transition probabilities given the needed information.
+
+\begin{center}
+    \begin{tabular}{| l | l | l | l |}
+    \hline
+    Day & Min Temp & Max Temp & Summary \\ \hline
+    Monday & 11C & 22C & A clear day with lots of sunshine.
+    However, the strong breeze will bring down the temperatures. \\ \hline
+    Tuesday & 9C & 19C & Cloudy with rain, across many northern regions. Clear spells
+    across most of Scotland and Northern Ireland,
+    but rain reaching the far northwest. \\ \hline
+    Wednesday & 10C & 21C & Rain will still linger for the morning.
+    Conditions will improve by early afternoon and continue
+    throughout the evening. \\
+    \hline
+    \end{tabular}
+\end{center}
+
+
+The \textit{emission probabilities} can then be expressed as
+\begin{align}
+  p(A_d^k|Z_d^k, \sigma) & = \prod_{s,l} {\underbrace{p(A_d^k=l|Z_d^k=s, \sigma)}_\text{$E_{sl}$}} ^{I\{A_d^k=l, Z_d^k=s\}} \nonumber \\
+  & = \prod_{s,l}  E_{sl}^{I\{A_d^k=l, Z_d^k=s\}}
+\end{align}
+And the \textit{transition probabilities} as
+\begin{align}
+  p(Z_{d+1}^k|Z_d, G_d, \iota, \alpha) & = \prod_{s,t,g,\gamma}
+  {\underbrace{p(Z_{d+1}^k = t|Z_d^k = \{s,\gamma\}, n_d^k = g, \iota, \alpha)}_\text{$T_{stg\gamma}$}} ^{I\{Z_{d+1}^k = t, Z_d^k = \{s,\gamma\}, n_d^k = g\}} \nonumber \\
+  & = \prod_{s,t,g,\gamma} T_{stg\gamma}^{I\{Z_{d+1}^k = t, Z_d^k = \{s,\gamma\}, n_d^k = g\}}
+\end{align}
+Substituting the emission and transition probabilities into equation \eqref{complete_likelihood} yields
+\begin{align}
+  p(A,Z|\Omega, G) = \bigg( \prod_{d,k} \prod_{s,l} E_{sl}^{I\{A_d^k=l, Z_d^k=s\}} \bigg) \bigg( \prod_{d,k} \prod_{s,t,g,\gamma} T_{stg\gamma}^{I\{Z_{d+1}^k = t, Z_d^k = \{s,\gamma\}, n_d^k = g\}} \bigg)
+\end{align}
+
+Given the \textit{variational distribution} for $Z$
+\begin{align}
+  q(Z) = \prod_{d,k} q(Z_d^k)
+\end{align}
+we need to compute
+\begin{align}
+  \log q^*(Z_x^y) & \propto \underset{\{d,k\} \neq \{x,y\}}{\mathbb{E}} \bigg[ \log p(A,Z|\Omega, G) \bigg] \nonumber \\
+  & = \underset{\{d,k\} \neq \{x,y\}}{\mathbb{E}} \bigg[\sum_{d,k}\sum_{s,l} I\{A_d^k=l, Z_d^k=s\} \log E_{sl} \bigg] \label{emission} \\
+      & + \underset{\{d,k\} \neq \{x,y\}}{\mathbb{E}} \bigg[ \sum_{d,k}\sum_{s,t,g,\gamma} I\{Z_{d+1}^k = t, Z_d^k = \{s,\gamma\}, n_d^k = g\} \log T_{stg\gamma} \bigg] \label{transmission}
+\end{align}
+We start by working with the emission term in equation \eqref{emission}. Keeping in mind that we are only interested in $Z_x^y$ it can be simplified as follows
+\begin{align}
+  \underset{\{d,k\} \neq \{x,y\}}{\mathbb{E}} \bigg[\sum_{d,k}\sum_{s,l} I\{A_d^k=l, Z_d^k=s\} \log E_{sl} \bigg] \propto
+  \sum_{s,l} \log E_{sl} P(A_x^y=l, Z_x^y=s) \nonumber \\
+  = \sum_{s,l} \log E_{sl} P(A_x^y=l | Z_x^y=s)P(Z_x^y=s)
+  \label{expanded_emission}
+\end{align}
+Using the same mindset we can simplify the transmission term in equation \eqref{transmission} as follows
+\begin{align}
+  & \underset{\{d,k\} \neq \{x,y\}}{\mathbb{E}} \bigg[ \sum_{d,k}\sum_{s,t,g,\gamma} I\{Z_{d+1}^k = t, Z_d^k = \{s,\gamma\}, n_d^k = g\} \log T_{stg\gamma} \bigg] \nonumber\\
+  & \propto \sum_{s,t,g,\gamma} \log T_{stg\gamma} \underset{\{d,k\} \neq \{x,y\}}{\mathbb{E}} \bigg[
+  I\{Z_{x}^y = t, Z_{x-1}^y = \{s,\gamma\}, n_{x-1}^y = g\} + \{Z_{x+1}^y = t, Z_x^y = \{s,\gamma\}, n_x^y = g\}\bigg] \nonumber \\
+  & \propto \sum_{s,t,g,\gamma} \log T_{stg\gamma} \bigg( P(Z_x^y = t, Z_{x-1}^y = \{s,\gamma\}, n_{x-1}^y = g)
+  + P(Z_x^y = \{s,\gamma\}, Z_{x+1}^y = t, n_x^y = g) \bigg) \nonumber \\
+  & = \sum_{s,t,g,\gamma} \log T_{stg\gamma} \bigg( P(Z_x^y = t| Z_{x-1}^y = \{s,\gamma\}, n_{x-1}^y = g)P(Z_{x-1}^y = \{s,\gamma\})P(n_{x-1}^y = g) \nonumber\\
+  & + P(Z_{x+1}^y = t| Z_x^y = \{s,\gamma\}, n_x^y = g)P(Z_x^y = \{s,\gamma\})P(n_x^y = g) \bigg)
+  \label{expanded_transmission}
+\end{align}
+Substituting \eqref{expanded_emission} and \eqref{expanded_transmission} into \eqref{emission} and \eqref{transmission} respectively yields
+\begin{align}
+  \log q^*(Z_x^y) & \propto \sum_{s,l} \log E_{sl} P(A_x^y=l | Z_x^y=s)P(Z_x^y=s) + \\
+  & \sum_{s,t,g,\gamma} \log T_{stg\gamma} \bigg( P(Z_x^y = t| Z_{x-1}^y = \{s,\gamma\}, n_{x-1}^y = g)P(Z_{x-1}^y = \{s,\gamma\})P(n_{x-1}^y = g) + \nonumber\\
+  & + P(Z_{x+1}^y = t| Z_x^y = \{s,\gamma\}, n_x^y = g)P(Z_x^y = \{s,\gamma\})P(n_x^y = g) \bigg)
+\end{align}
