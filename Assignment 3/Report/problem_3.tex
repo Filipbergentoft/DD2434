@@ -10,7 +10,14 @@ We are interested in finding the likelihood of our observations $X$ by marginali
 \begin{equation}
   p(X) = \sum_Z p(X,Z)
 \end{equation}
-where $\sum_Z$ denotes the sum over all latent variables. We will show how this problem can be continuously split up into smaller and smaller subproblems using the structure of the binary tree until the leaves are reached. This will result in a linear algorithm for computing the requested likelihood $P(X \mid T, M, \sigma, \alpha, \pi)$ which we will from now on denote as $p(X)$ for the sake of brevity.
+where $\sum_Z$ denotes the sum over all latent variables. We will show how this problem can be continuously split up into smaller and smaller subproblems using the structure of the binary tree until the leaves are reached. This will result in a linear algorithm for computing the requested likelihood $P(X \mid T, M, \sigma, \alpha, \pi)$ which we will from now on denote as $p(X)$ for the sake of brevity.\\
+
+The instructions were unclear regarding the special cases of the root and leaves, since we have two neighbours in the root case and one neighbour in the leaf case. I have made the following interpretation.
+
+\begin{itemize}
+  \item Root case: $p(X_{u} \mid Z_{u}=c, Z_{v_{1}}=c_{1}, Z_{v_{2}}=c_{2}) \sim N\left(X_{u} \mid(1-\alpha) \mu_{c}+\sum_{i \in[2]} \frac{1}{2} \alpha \mu_{c_{i}}, \sigma^{2}\right)$
+  \item Leaf case: $p(X_{u} \mid Z_{u}=c, Z_{v_{1}}=c_{1}) \sim N\left(X_{u} \mid(1-\alpha) \mu_{c} + \alpha \mu_{c_1}, \sigma^{2}\right)$
+\end{itemize}
 
 \subsection*{Starting at the root}
 We will start by showing how one can split the problem into two subproblems when starting at the root.
@@ -56,7 +63,7 @@ Using that the latent variables $Z$ are independent given $\pi$ and substituting
   \Big(\underbrace{\sum_{Z_{u_1 \downarrow}} p(X_{u_1}, X_{u_1 \downarrow}, Z_{u_1 \downarrow}|Z_{u_1}, Z_u)}_\text{$p_{Z_{u_1 \downarrow}}$} \Big)
   \Big(\underbrace{\sum_{Z_{u_2 \downarrow}} p(X_{u_2}, X_{u_2 \downarrow}, Z_{u_2 \downarrow}|Z_{u_2}, Z_u)}_\text{$p_{Z_{u_2 \downarrow}}$} \Big) \bigg]
 \end{align}
-Where $p_{Z_{u_1 \downarrow}}$ and $p_{Z_{u_2 \downarrow}}$ denotes two independent subproblems with respect to the sets of latent variables $Z_{u_1 \downarrow}$ and $Z_{u_2 \downarrow}$
+Where $p_{Z_{u_1 \downarrow}}$ and $p_{Z_{u_2 \downarrow}}$ denotes two independent subproblems with respect to the sets of latent variables $Z_{u_1 \downarrow}$ and $Z_{u_2 \downarrow}$. Each can thus be solved separately whilst the other factor is stored an held constant. This is how the linearity is achieved.
 
 \subsection*{Starting at a node within the tree}
 Now we will show how we can continue to divide each subproblem $p_{Z_{u_1 \downarrow}}$ and $p_{Z_{u_2 \downarrow}}$ defined above until the leaves are reached. We will now let $u_{1}$ and $u_{2}$ be the children of node $u$ and we will treat the problem shown in figure \ref{within_tree}
@@ -125,3 +132,5 @@ When equation \eqref{rec1} $+$ \eqref{rec2} has been used recursively until the 
    & = p(X_{u_1}|Z_{u_1}, Z_{\text{pa}(u_1)}) \nonumber\\
    & = \mathcal{N}\Big(X_{u_1} | (1-\alpha)\mu_{Z_{u_1}} + \alpha \mu_{Z_{\text{pa}(u_1)}}, \sigma^2 \Big)
  \end{align}
+
+ We have thus shown how the problem can be continuously separated into smaller and smaller independent subproblems that can be solved separately whilst holder the others constant and thus only need to be computed once. We have also shown how the DP-algorithm can be initialised when reaching the leaves of the tree.

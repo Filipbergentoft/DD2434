@@ -10,7 +10,10 @@
 
 \usepackage[formats]{listings}  %% Code listing%% Code format
 
+
+
 %\usemintedstyle{friendly}
+\usepackage{color, colortbl}
 \usepackage{amsmath}
 \usepackage{color}
 \usepackage{tcolorbox}
@@ -63,6 +66,8 @@
 \usepackage{natbib}
 %\pagestyle{fancy}
 \begin{document}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\newcolumntype{g}{>{\columncolor{LightCyan}}c}
 \renewcommand{\bibname}{References}
 \hypersetup{citecolor=black}
 \begin{titlepage}\centering
@@ -81,11 +86,12 @@ Submitted a solution to the original version of 3.1 before it was simplified and
 
 \section*{3.2 Hard EM for Advertisements}
 Problem removed from assignment.
-qqq: Add how I have chosen to do at the root/leaves when it comes to the Normal Dist
+\newpage
 \input{problem_3}
-\newpage
 \input{problem_4}
-\newpage
+\section*{Hard VI for Covid-19}
+Problem not attempted
+
 \input{problem_6}
 
 \end{document}

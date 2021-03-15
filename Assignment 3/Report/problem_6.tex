@@ -59,11 +59,15 @@ where $d$ is a positive integer and $x \in \mathbb{R}^{|V|}$. It is thus suffici
 \end{equation}
 Which in turn proves that $L$ is positive semi-definite.
 
-\subsection*{qqq: Third subproblem}
-In this problem a \textit{trivial} vector would be a constant vector I.E. that all elements in the vector are equal. This is since a constant vector will always minimise the expression $x^T L x$. Thus is, in this setting, a \textit{non-trivial} vector $x_*$ a non-constant vector. \\
+\subsection*{Third subproblem}
+In this problem a \textit{trivial} vector would be a constant vector I.E. that all elements in the vector are equal. This is since a constant vector will always minimise equation \eqref{spectral_expression}. Thus is, in this setting, a \textit{non-trivial} vector $x_*$ a non-constant vector. \\
+
+In order to answer the second part of this question we need to understand what a \textit{meaningful embedding} corresponds to in this setting. One of the main uses of spectral graph analysis is to perform spectral clustering, where one aims to cluster points that are similar. A way of measuring similarity within a set of points is by the number of edges within that set, where more edges are better. A meaningful embedding would thus correspond to a way of clustering points such that the number of edges within the clusters are high.\\
 
 We are given that $x_*$ is a non-trivial vector that minimises equation \eqref{spectral_expression}, $x_*$ is thus not a constant vector. So given that a non-constant $x_*$ vector is the solution to
 \begin{equation}
   x_* = \underset{x}{\text{argmin }} \frac{1}{d} \sum_{(u, v) \in E}\left(x_{u}-x_{v}\right)^{2}
 \end{equation}
-where the sum is taken over the vertices $(u, v) \in E$, I.E. the vertices that have an edge between them. This means that to minimise the sum one would want $x_u$ and $x_v$ to have a similar value if $(u, v) \in E$. Given that a cluster of points is a set of points that have a lot of edges within that set, this will result in that points belonging to the same cluster will have similar values for their corresponding elements in $x_*$. Conversely; for two different clusters we want the number of edges between the two clusters to be few. This means that 
+where the sum is taken over the vertices $(u, v) \in E$, I.E. the vertices that have an edge between them. Given that a cluster of points is a set of points that have a lot of edges within that set, equation \eqref{spectral_expression} will be minimised if points in the same clusters have similar values for their corresponding element in $x_*$. Additionally, since we are seeking a non-trivial solution, points from different clusters will have different values for their corresponding element in $x_*$. Thus can one plot the elements of $x_*$ on the real line in order to receive a meaningful embedding. This will result in clusters of points on the real line representing clusters of the real data. \\
+
+Note that if several vectors $x_1, x_2, ..., x_m$ minimises \eqref{spectral_expression} (has small corresponding eigenvalues), one can apply k-means to those vectors to get a more accurate representation of the actual clusters that exist in the data.
